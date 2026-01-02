@@ -83,11 +83,12 @@ const Essay: React.FC = () => {
             )}
 
             {article && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                            <div className="flex justify-between items-start mb-4">
-                                <h3 className="font-bold text-gray-700">Topic Article</h3>
+                <div className="space-y-6">
+                    {/* Row 1: Article */}
+                    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div className="flex justify-between items-start mb-4">
+                            <h3 className="font-bold text-gray-700">Topic Article</h3>
+                            {result && (
                                 <button
                                     onClick={explainArticle}
                                     disabled={explaining}
@@ -96,65 +97,67 @@ const Essay: React.FC = () => {
                                     <HelpCircle className="w-4 h-4 mr-1" />
                                     {explaining ? 'Explaining...' : 'Explain in Chinese'}
                                 </button>
-                            </div>
-                            <div className="prose prose-sm max-w-none text-gray-600 whitespace-pre-line">
-                                {article}
-                            </div>
-                            {explanation && (
-                                <div className="mt-4 p-4 bg-yellow-50 rounded-lg text-sm text-yellow-800 border border-yellow-100">
-                                    <h4 className="font-bold mb-1">Explanation:</h4>
-                                    {explanation}
-                                </div>
                             )}
                         </div>
-                    </div>
-
-                    <div className="space-y-4">
-                        {!result ? (
-                            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
-                                <h3 className="font-bold text-gray-700 mb-4">Your Essay</h3>
-                                <textarea
-                                    value={essay}
-                                    onChange={(e) => setEssay(e.target.value)}
-                                    placeholder="Write your essay here..."
-                                    className="flex-1 w-full p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none min-h-[300px]"
-                                />
-                                <div className="mt-4 flex justify-end">
-                                    <button
-                                        onClick={submitEssay}
-                                        disabled={loading || !essay.trim()}
-                                        className="flex items-center px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
-                                    >
-                                        <Send className="w-4 h-4 mr-2" />
-                                        {loading ? 'Grading...' : 'Submit Essay'}
-                                    </button>
-                                </div>
-                            </div>
-                        ) : (
-                            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 animate-in fade-in slide-in-from-bottom-4">
-                                <div className="flex items-center justify-between mb-6">
-                                    <h3 className="font-bold text-gray-900">Result</h3>
-                                    <div className="text-2xl font-bold text-blue-600">
-                                        {result.score.toFixed(1)} <span className="text-sm text-gray-400 font-normal">/ 10</span>
-                                    </div>
-                                </div>
-                                <div className="space-y-4">
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-700 mb-1">Feedback</h4>
-                                        <p className="text-gray-600 text-sm whitespace-pre-line bg-gray-50 p-3 rounded-lg">
-                                            {result.feedback}
-                                        </p>
-                                    </div>
-                                </div>
-                                <button
-                                    onClick={startNew}
-                                    className="mt-6 w-full py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 font-medium"
-                                >
-                                    Try Another Topic
-                                </button>
+                        <div className="prose prose-sm max-w-none text-gray-600 whitespace-pre-line">
+                            {article}
+                        </div>
+                        {explanation && (
+                            <div className="mt-4 p-4 bg-yellow-50 rounded-lg text-sm text-yellow-800 border border-yellow-100">
+                                <h4 className="font-bold mb-1">Explanation:</h4>
+                                {explanation}
                             </div>
                         )}
                     </div>
+
+                    {/* Row 2: Answer Section */}
+                    {!result && (
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <h3 className="font-bold text-gray-700 mb-4">Your Essay</h3>
+                            <textarea
+                                value={essay}
+                                onChange={(e) => setEssay(e.target.value)}
+                                placeholder="Write your essay here..."
+                                className="w-full p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none min-h-[300px]"
+                            />
+                            <div className="mt-4 flex justify-end">
+                                <button
+                                    onClick={submitEssay}
+                                    disabled={loading || !essay.trim()}
+                                    className="flex items-center px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
+                                >
+                                    <Send className="w-4 h-4 mr-2" />
+                                    {loading ? 'Grading...' : 'Submit Essay'}
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Row 3: Feedback */}
+                    {result && (
+                        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 animate-in fade-in slide-in-from-bottom-4">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="font-bold text-gray-900">Result</h3>
+                                <div className="text-2xl font-bold text-blue-600">
+                                    {result.score.toFixed(1)} <span className="text-sm text-gray-400 font-normal">/ 10</span>
+                                </div>
+                            </div>
+                            <div className="space-y-4">
+                                <div>
+                                    <h4 className="text-sm font-medium text-gray-700 mb-1">Feedback</h4>
+                                    <p className="text-gray-600 text-sm whitespace-pre-line bg-gray-50 p-3 rounded-lg">
+                                        {result.feedback}
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={startNew}
+                                className="mt-6 w-full py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 font-medium"
+                            >
+                                Try Another Topic
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
         </div>
