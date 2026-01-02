@@ -23,12 +23,9 @@ const Dashboard: React.FC = () => {
     // Helper to find remaining attempts
     const getRemaining = (type: string) => {
         const limit = stats?.user?.usageLimits?.find((l: any) => l.testType === type);
-        // Default to not showing if not found or assumes 0? 
-        // Logic says default created on use. If not here, maybe 0 or 3?
-        // Let's assume 3 if undefined for display? No, better show what server has or 'Checking...'.
-        // Actually the server creates it on first check. So it might be undefined here.
-        // We can just say "Start to see limit" or hide it.
-        return limit ? limit.remainingAttempts : 'N/A';
+        if (!limit) return 'N/A';
+        if (limit.remainingAttempts === -1) return '♾️ Unlimited';
+        return limit.remainingAttempts;
     };
 
     return (
