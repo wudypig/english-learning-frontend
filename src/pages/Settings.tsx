@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 
 const Settings: React.FC = () => {
     const { user, login } = useAuth(); // login updates context
     const [nickname, setNickname] = useState(user?.nickname || '');
-    const [difficultyLevel, setDifficultyLevel] = useState(user?.difficultyLevel || '9th');
+    const [difficultyLevel, setDifficultyLevel] = useState(user?.difficultyLevel || '7th');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
+
+    // Sync state with user context when it changes
+    useEffect(() => {
+        if (user) {
+            setNickname(user.nickname || '');
+            setDifficultyLevel(user.difficultyLevel || '7th');
+        }
+    }, [user]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
