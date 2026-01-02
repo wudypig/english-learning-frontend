@@ -7,6 +7,7 @@ interface User {
     nickname: string;
     role: string;
     difficultyLevel?: string;
+    isActive?: boolean;
 }
 
 interface AuthContextType {
