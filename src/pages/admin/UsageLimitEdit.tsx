@@ -98,20 +98,26 @@ export default function UsageLimitEdit() {
 
             <div className="bg-white p-6 rounded-lg shadow">
                 <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-sm text-blue-800">
+                            💡 <strong>Tip:</strong> Set to <code className="bg-blue-100 px-1 rounded">-1</code> for unlimited attempts
+                        </p>
+                    </div>
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Essay Attempts
                         </label>
                         <input
                             type="number"
-                            min="0"
+                            min="-1"
                             value={essayLimit}
                             onChange={(e) => setEssayLimit(parseInt(e.target.value) || 0)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md"
                             required
                         />
                         <p className="mt-1 text-sm text-gray-500">
-                            Number of essay generation attempts remaining
+                            Number of essay generation attempts (-1 = unlimited)
                         </p>
                     </div>
 
@@ -121,14 +127,14 @@ export default function UsageLimitEdit() {
                         </label>
                         <input
                             type="number"
-                            min="0"
+                            min="-1"
                             value={readingLimit}
                             onChange={(e) => setReadingLimit(parseInt(e.target.value) || 0)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md"
                             required
                         />
                         <p className="mt-1 text-sm text-gray-500">
-                            Number of reading test generation attempts remaining
+                            Number of reading test generation attempts (-1 = unlimited)
                         </p>
                     </div>
 
@@ -149,7 +155,11 @@ export default function UsageLimitEdit() {
                             {limits.map((limit) => (
                                 <div key={limit.id} className="flex justify-between text-sm">
                                     <span className="capitalize">{limit.testType}:</span>
-                                    <span className="font-medium">{limit.remainingAttempts} attempts</span>
+                                    <span className="font-medium">
+                                        {limit.remainingAttempts === -1
+                                            ? '♾️ Unlimited'
+                                            : `${limit.remainingAttempts} attempts`}
+                                    </span>
                                 </div>
                             ))}
                         </div>
