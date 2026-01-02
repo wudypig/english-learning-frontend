@@ -29,7 +29,11 @@ const Register: React.FC = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Register</h2>
+                <div className="text-center mb-6">
+                    <h1 className="text-3xl font-bold text-blue-600 mb-2">Write Nest</h1>
+                    <p className="text-sm text-gray-600">AI-Powered English Learning</p>
+                </div>
+                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Create Account</h2>
                 {error && <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">{error}</div>}
 
                 <form onSubmit={handleSubmit} className="space-y-4">

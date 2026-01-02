@@ -31,7 +31,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <div className="flex h-screen bg-gray-50">
             {/* Mobile Header */}
             <div className="lg:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40 px-4 py-3 flex items-center justify-between">
-                <h1 className="text-xl font-bold text-blue-600">EngLearn</h1>
+                <h1 className="text-xl font-bold text-blue-600">Write Nest</h1>
                 <button
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                     className="p-2 rounded-lg hover:bg-gray-100"
@@ -56,7 +56,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0' // Show on desktop, toggle on mobile
             )}>
                 <div className="p-6">
-                    <h1 className="text-2xl font-bold text-blue-600">EngLearn</h1>
+                    <h1 className="text-2xl font-bold text-blue-600">Write Nest</h1>
                 </div>
 
                 <nav className="flex-1 px-4 space-y-2 overflow-y-auto">
