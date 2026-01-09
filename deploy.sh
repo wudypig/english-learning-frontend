@@ -19,9 +19,7 @@ echo -e "${GREEN}✓ Build complete${NC}\n"
 
 # Deploy
 echo -e "${YELLOW}☁️  Deploying to Firebase Hosting...${NC}"
-cd ..
 firebase deploy --only hosting
-cd client
 
 echo -e "${GREEN}✓ Deployment complete${NC}\n"
 
