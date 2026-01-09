@@ -94,19 +94,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                         </div>
                     </div>
 
-                    {/* Admin Mode Toggle */}
-                    {user.role === 'admin' && (
-                        <div className="mb-3">
-                            <Link
-                                to="/admin/users"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="flex items-center w-full px-4 py-2 text-sm text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
-                            >
-                                👨‍💼 Admin Console
-                            </Link>
-                        </div>
-                    )}
-
                     <button
                         onClick={handleLogout}
                         className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
