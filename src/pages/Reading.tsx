@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import api from '../lib/api';
-import { BookOpen, CheckCircle, XCircle, HelpCircle, AlertCircle, Sparkles, Award } from 'lucide-react';
+import { BookOpen, CheckCircle, XCircle, AlertCircle, Award } from 'lucide-react';
 
 const Reading: React.FC = () => {
     const [test, setTest] = useState<any>(null);
@@ -8,8 +8,6 @@ const Reading: React.FC = () => {
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [explaining, setExplaining] = useState(false);
-    const [explanation, setExplanation] = useState('');
     const [score, setScore] = useState(0);
 
     const startTest = async () => {
@@ -17,7 +15,6 @@ const Reading: React.FC = () => {
         setTest(null);
         setAnswers({});
         setSubmitted(false);
-        setExplanation('');
         setError('');
         try {
             const res = await api.post('/content/reading/generate');
@@ -66,18 +63,7 @@ const Reading: React.FC = () => {
         }
     };
 
-    const explainArticle = async () => {
-        if (!test?.article) return;
-        setExplaining(true);
-        try {
-            const res = await api.post('/content/explain', { text: test.article, language: 'Chinese' });
-            setExplanation(res.data.explanation);
-        } catch (err) {
-            alert('Failed to explain.');
-        } finally {
-            setExplaining(false);
-        }
-    };
+
 
     return (
         <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
@@ -117,34 +103,15 @@ const Reading: React.FC = () => {
                 <div className="space-y-6">
                     {/* Article Section */}
                     <div className="card-dark p-6 animate-scale-in">
-                        <div className="flex justify-between items-start mb-4">
-                            <div className="flex items-center">
-                                <div className="w-10 h-10 rounded-lg gradient-bg-emerald flex items-center justify-center mr-3">
-                                    <BookOpen className="w-5 h-5 text-white" />
-                                </div>
-                                <h3 className="text-xl font-bold text-slate-100">Article</h3>
+                        <div className="flex items-center mb-4">
+                            <div className="w-10 h-10 rounded-lg gradient-bg-emerald flex items-center justify-center mr-3">
+                                <BookOpen className="w-5 h-5 text-white" />
                             </div>
-                            <button
-                                onClick={explainArticle}
-                                disabled={explaining}
-                                className="text-sm text-emerald-400 hover:text-emerald-300 flex items-center transition-colors"
-                            >
-                                <HelpCircle className="w-4 h-4 mr-1" />
-                                {explaining ? 'Explaining...' : 'Explain in Chinese'}
-                            </button>
+                            <h3 className="text-xl font-bold text-slate-100">Article</h3>
                         </div>
                         <div className="prose prose-invert max-w-none text-slate-300 leading-relaxed whitespace-pre-line">
                             {test.article}
                         </div>
-                        {explanation && (
-                            <div className="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg animate-slide-up">
-                                <h4 className="text-sm font-bold text-amber-400 mb-2 flex items-center">
-                                    <Sparkles className="w-4 h-4 mr-2" />
-                                    Chinese Explanation
-                                </h4>
-                                <p className="text-amber-200/90 text-sm leading-relaxed">{explanation}</p>
-                            </div>
-                        )}
                     </div>
 
                     {/* Questions Section */}
