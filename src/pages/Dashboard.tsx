@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import api from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { PenTool, BookOpen, TrendingUp, Award, ArrowRight } from 'lucide-react';
+import { PenTool, BookOpen, TrendingUp, Award, ArrowRight, Target, Flame } from 'lucide-react';
+import StatCard from '../components/StatCard';
+import PerformanceChart from '../components/PerformanceChart';
+import { calculateTotalTests, calculateAverageScore, calculateStreak, groupByDate } from '../utils/analytics';
 
 const Dashboard: React.FC = () => {
     const { user } = useAuth();
@@ -28,6 +31,18 @@ const Dashboard: React.FC = () => {
         return limit.remainingAttempts;
     };
 
+    // Calculate analytics data
+    const analytics = useMemo(() => {
+        const history = stats?.history || [];
+        return {
+            totalTests: calculateTotalTests(history),
+            avgEssay: calculateAverageScore(history, 'essay'),
+            avgReading: calculateAverageScore(history, 'reading'),
+            streak: calculateStreak(history),
+            chartData: groupByDate(history),
+        };
+    }, [stats]);
+
     return (
         <div className="space-y-8 animate-fade-in">
             {/* Welcome Header */}
@@ -37,6 +52,41 @@ const Dashboard: React.FC = () => {
                 </h1>
                 <p className="text-slate-400 text-lg">Ready to improve your English today?</p>
             </header>
+
+            {/* Analytics Stats */}
+            {stats?.history && stats.history.length > 0 && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <StatCard
+                        label="Total Tests"
+                        value={analytics.totalTests}
+                        gradient="blue"
+                        icon={<Target className="w-6 h-6 text-white" />}
+                    />
+                    <StatCard
+                        label="Avg Essay Score"
+                        value={analytics.avgEssay > 0 ? analytics.avgEssay.toFixed(1) : 'N/A'}
+                        gradient="purple"
+                        icon={<PenTool className="w-6 h-6 text-white" />}
+                    />
+                    <StatCard
+                        label="Avg Reading Score"
+                        value={analytics.avgReading > 0 ? analytics.avgReading.toFixed(1) : 'N/A'}
+                        gradient="emerald"
+                        icon={<BookOpen className="w-6 h-6 text-white" />}
+                    />
+                    <StatCard
+                        label="Current Streak"
+                        value={`${analytics.streak} ${analytics.streak === 1 ? 'day' : 'days'}`}
+                        gradient="orange"
+                        icon={<Flame className="w-6 h-6 text-white" />}
+                    />
+                </div>
+            )}
+
+            {/* Performance Chart */}
+            {stats?.history && stats.history.length > 0 && analytics.chartData.length > 0 && (
+                <PerformanceChart data={analytics.chartData} />
+            )}
 
             {/* Practice Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -128,8 +178,8 @@ const Dashboard: React.FC = () => {
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center space-x-4">
                                         <div className={`p-3 rounded-lg ${record.type === 'essay'
-                                                ? 'gradient-bg-purple'
-                                                : 'gradient-bg-emerald'
+                                            ? 'gradient-bg-purple'
+                                            : 'gradient-bg-emerald'
                                             }`}>
                                             {record.type === 'essay' ? (
                                                 <PenTool className="w-5 h-5 text-white" />
