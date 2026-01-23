@@ -22,7 +22,7 @@ const Review: React.FC = () => {
             </header>
 
             <div className="card-dark overflow-hidden">
-                {history.map((record, idx) => (
+                {history.map((record) => (
                     <div key={record.id} className="border-b border-slate-700 last:border-0">
                         <div
                             onClick={() => toggleExpand(record.id)}
@@ -30,8 +30,8 @@ const Review: React.FC = () => {
                         >
                             <div className="flex items-center space-x-4 flex-1">
                                 <div className={`p-3 rounded-lg ${record.type === 'essay'
-                                        ? 'gradient-bg-purple'
-                                        : 'gradient-bg-emerald'
+                                    ? 'gradient-bg-purple'
+                                    : 'gradient-bg-emerald'
                                     }`}>
                                     {record.type === 'essay' ? (
                                         <PenTool className="w-5 h-5 text-white" />
@@ -61,8 +61,8 @@ const Review: React.FC = () => {
                                     <div className="flex items-center">
                                         <Award className="w-4 h-4 text-amber-400 mr-1" />
                                         <span className={`text-xl font-bold ${Number(record.score) >= (record.type === 'essay' ? 6 : 60)
-                                                ? 'text-emerald-400'
-                                                : 'text-orange-400'
+                                            ? 'text-emerald-400'
+                                            : 'text-orange-400'
                                             }`}>
                                             {Number(record.score).toFixed(1)}
                                         </span>

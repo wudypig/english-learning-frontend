@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { BookOpen, PenTool, LayoutDashboard, Settings, LogOut, History, Menu, X, ChevronDown, User } from 'lucide-react';
+import { BookOpen, PenTool, LayoutDashboard, Settings, LogOut, History, Menu, X, ChevronDown } from 'lucide-react';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { user, logout } = useAuth();
@@ -68,8 +68,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                                         key={item.path}
                                         to={item.path}
                                         className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
-                                                ? 'bg-gradient-to-r from-violet-500 to-pink-500 text-white shadow-lg'
-                                                : 'text-slate-300 hover:text-white hover:bg-slate-700'
+                                            ? 'bg-gradient-to-r from-violet-500 to-pink-500 text-white shadow-lg'
+                                            : 'text-slate-300 hover:text-white hover:bg-slate-700'
                                             }`}
                                     >
                                         <Icon className="w-4 h-4 mr-2" />
@@ -147,8 +147,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                                         to={item.path}
                                         onClick={() => setMobileMenuOpen(false)}
                                         className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all ${isActive
-                                                ? 'bg-gradient-to-r from-violet-500 to-pink-500 text-white'
-                                                : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                                            ? 'bg-gradient-to-r from-violet-500 to-pink-500 text-white'
+                                            : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                                             }`}
                                     >
                                         <Icon className="w-5 h-5 mr-3" />
