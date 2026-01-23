@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import api from '../lib/api';
 import { useAuth } from '../context/AuthContext';
+import { User, Mail, GraduationCap, Save } from 'lucide-react';
 
 const Settings: React.FC = () => {
-    const { user, login } = useAuth(); // login updates context
+    const { user, login } = useAuth();
     const [nickname, setNickname] = useState(user?.nickname || '');
     const [difficultyLevel, setDifficultyLevel] = useState(user?.difficultyLevel || '7th');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
 
-    // Sync state with user context when it changes
     useEffect(() => {
         if (user) {
             setNickname(user.nickname || '');
@@ -23,10 +23,10 @@ const Settings: React.FC = () => {
         setMessage('');
         try {
             const res = await api.put('/user/settings', { nickname, difficultyLevel });
-            // Update context
             const token = localStorage.getItem('token') || '';
-            login(token, res.data); // Update user in state
+            login(token, res.data);
             setMessage('Profile updated successfully!');
+            setTimeout(() => setMessage(''), 3000);
         } catch (error) {
             setMessage('Failed to update profile.');
         } finally {
@@ -37,39 +37,66 @@ const Settings: React.FC = () => {
     const gradeLevels = ['7th', '8th', '9th', '10th', '11th', '12th'];
 
     return (
-        <div className="max-w-xl">
-            <h1 className="text-2xl font-bold text-gray-900 mb-6">Settings</h1>
+        <div className="max-w-2xl mx-auto animate-fade-in">
+            <header className="mb-8">
+                <h1 className="text-3xl font-bold text-slate-100 mb-2">Settings</h1>
+                <p className="text-slate-400">Manage your profile and preferences</p>
+            </header>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {message && <div className={`p-3 rounded text-sm ${message.includes('Success') ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-700'}`}>{message}</div>}
+            <div className="card-dark p-8">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    {message && (
+                        <div className={`p-4 rounded-lg text-sm animate-slide-up ${message.includes('success')
+                                ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
+                                : 'bg-red-500/10 border border-red-500/30 text-red-400'
+                            }`}>
+                            {message}
+                        </div>
+                    )}
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Email</label>
+                        <label className="block text-sm font-medium text-slate-300 mb-3">
+                            <div className="flex items-center mb-2">
+                                <Mail className="w-4 h-4 mr-2" />
+                                Email Address
+                            </div>
+                        </label>
                         <input
                             type="email"
                             value={user?.email}
                             disabled
-                            className="mt-1 block w-full rounded-lg border-gray-200 bg-gray-50 text-gray-500 border p-2 cursor-not-allowed"
+                            className="w-full px-4 py-3 bg-slate-700/30 border border-slate-700 rounded-lg text-slate-500 cursor-not-allowed"
                         />
+                        <p className="mt-2 text-xs text-slate-500">Email cannot be changed</p>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Nickname</label>
+                        <label className="block text-sm font-medium text-slate-300 mb-3">
+                            <div className="flex items-center mb-2">
+                                <User className="w-4 h-4 mr-2" />
+                                Nickname
+                            </div>
+                        </label>
                         <input
                             type="text"
                             value={nickname}
                             onChange={(e) => setNickname(e.target.value)}
-                            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
+                            className="input-dark"
+                            placeholder="Enter your nickname"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Difficulty Level</label>
+                        <label className="block text-sm font-medium text-slate-300 mb-3">
+                            <div className="flex items-center mb-2">
+                                <GraduationCap className="w-4 h-4 mr-2" />
+                                Difficulty Level
+                            </div>
+                        </label>
                         <select
                             value={difficultyLevel}
                             onChange={(e) => setDifficultyLevel(e.target.value)}
-                            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2 bg-white"
+                            className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
                         >
                             {gradeLevels.map((level) => (
                                 <option key={level} value={level}>
@@ -77,17 +104,18 @@ const Settings: React.FC = () => {
                                 </option>
                             ))}
                         </select>
-                        <p className="mt-1 text-sm text-gray-500">
+                        <p className="mt-2 text-sm text-slate-400">
                             Choose your grade level to customize the difficulty of essays and reading tests
                         </p>
                     </div>
 
-                    <div className="pt-4">
+                    <div className="pt-4 border-t border-slate-700">
                         <button
                             type="submit"
                             disabled={loading}
-                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                            className="btn-gradient-purple w-full sm:w-auto flex items-center justify-center"
                         >
+                            <Save className="w-4 h-4 mr-2" />
                             {loading ? 'Saving...' : 'Save Changes'}
                         </button>
                     </div>
