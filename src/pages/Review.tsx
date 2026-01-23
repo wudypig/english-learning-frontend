@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import api from '../lib/api';
-import { BookOpen, PenTool, ChevronDown, ChevronUp, Award, Calendar } from 'lucide-react';
+import { BookOpen, PenTool, ChevronDown, ChevronUp, Award, Calendar, HelpCircle, Sparkles } from 'lucide-react';
 
 const Review: React.FC = () => {
     const [history, setHistory] = useState<any[]>([]);
     const [expanded, setExpanded] = useState<string | null>(null);
+    const [explanations, setExplanations] = useState<Record<string, string>>({});
+    const [explaining, setExplaining] = useState<string | null>(null);
 
     useEffect(() => {
         api.get('/user/history').then(res => setHistory(res.data));
@@ -12,6 +14,22 @@ const Review: React.FC = () => {
 
     const toggleExpand = (id: string) => {
         setExpanded(expanded === id ? null : id);
+    };
+
+    const explainContent = async (recordId: string, content: string) => {
+        if (explanations[recordId]) {
+            // Already have explanation, just toggle display
+            return;
+        }
+        setExplaining(recordId);
+        try {
+            const res = await api.post('/content/explain', { text: content, language: 'Chinese' });
+            setExplanations(prev => ({ ...prev, [recordId]: res.data.explanation }));
+        } catch (err) {
+            alert('Failed to explain.');
+        } finally {
+            setExplaining(null);
+        }
     };
 
     return (
@@ -79,13 +97,32 @@ const Review: React.FC = () => {
                         {expanded === record.id && (
                             <div className="px-6 py-6 bg-slate-700/20 border-t border-slate-700 space-y-5 animate-slide-up">
                                 <div>
-                                    <h4 className="font-semibold text-slate-100 text-sm mb-3 flex items-center">
-                                        <div className="w-1 h-4 gradient-bg-purple rounded-full mr-2"></div>
-                                        Content
-                                    </h4>
+                                    <div className="flex items-center justify-between mb-3">
+                                        <h4 className="font-semibold text-slate-100 text-sm flex items-center">
+                                            <div className="w-1 h-4 gradient-bg-purple rounded-full mr-2"></div>
+                                            Content
+                                        </h4>
+                                        <button
+                                            onClick={() => explainContent(record.id, record.content)}
+                                            disabled={explaining === record.id}
+                                            className="text-sm text-violet-400 hover:text-violet-300 flex items-center transition-colors"
+                                        >
+                                            <HelpCircle className="w-4 h-4 mr-1" />
+                                            {explaining === record.id ? 'Explaining...' : 'Explain in Chinese'}
+                                        </button>
+                                    </div>
                                     <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line bg-slate-800/50 p-4 rounded-lg border border-slate-700">
                                         {record.content}
                                     </p>
+                                    {explanations[record.id] && (
+                                        <div className="mt-4 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg animate-slide-up">
+                                            <h5 className="text-sm font-bold text-amber-400 mb-2 flex items-center">
+                                                <Sparkles className="w-4 h-4 mr-2" />
+                                                Chinese Explanation
+                                            </h5>
+                                            <p className="text-amber-200/90 text-sm leading-relaxed">{explanations[record.id]}</p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {record.type === 'essay' && (
