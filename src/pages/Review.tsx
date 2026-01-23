@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../lib/api';
-import { BookOpen, PenTool, ChevronDown, ChevronUp } from 'lucide-react';
+import { BookOpen, PenTool, ChevronDown, ChevronUp, Award, Calendar } from 'lucide-react';
 
 const Review: React.FC = () => {
     const [history, setHistory] = useState<any[]>([]);
@@ -15,47 +15,75 @@ const Review: React.FC = () => {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in">
             <header>
-                <h1 className="text-2xl font-bold text-gray-900">History Review</h1>
+                <h1 className="text-3xl font-bold text-slate-100 mb-2">History Review</h1>
+                <p className="text-slate-400">Review your past tests and track your progress</p>
             </header>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                {history.map((record) => (
-                    <div key={record.id} className="border-b border-gray-100 last:border-0">
+            <div className="card-dark overflow-hidden">
+                {history.map((record, idx) => (
+                    <div key={record.id} className="border-b border-slate-700 last:border-0">
                         <div
                             onClick={() => toggleExpand(record.id)}
-                            className="p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors"
+                            className="p-5 flex items-center justify-between cursor-pointer hover:bg-slate-700/30 transition-colors"
                         >
-                            <div className="flex items-center space-x-4">
-                                <div className={`p-2 rounded-lg ${record.type === 'essay' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
-                                    {record.type === 'essay' ? <PenTool className="w-5 h-5" /> : <BookOpen className="w-5 h-5" />}
+                            <div className="flex items-center space-x-4 flex-1">
+                                <div className={`p-3 rounded-lg ${record.type === 'essay'
+                                        ? 'gradient-bg-purple'
+                                        : 'gradient-bg-emerald'
+                                    }`}>
+                                    {record.type === 'essay' ? (
+                                        <PenTool className="w-5 h-5 text-white" />
+                                    ) : (
+                                        <BookOpen className="w-5 h-5 text-white" />
+                                    )}
                                 </div>
-                                <div>
-                                    <div className="flex items-center space-x-2">
-                                        <span className="font-bold text-gray-900 capitalize">{record.type}</span>
-                                        <span className="text-gray-400">•</span>
-                                        <span className="text-sm text-gray-500">{new Date(record.createdAt).toLocaleDateString()}</span>
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center space-x-2 mb-1">
+                                        <span className="font-bold text-slate-100 capitalize">{record.type}</span>
+                                        <span className="text-slate-600">•</span>
+                                        <div className="flex items-center text-sm text-slate-400">
+                                            <Calendar className="w-3 h-3 mr-1" />
+                                            {new Date(record.createdAt).toLocaleDateString('en-US', {
+                                                month: 'short',
+                                                day: 'numeric',
+                                                year: 'numeric'
+                                            })}
+                                        </div>
                                     </div>
-                                    <p className="text-sm text-gray-500 truncate w-64 md:w-96">{record.content?.substring(0, 100)}...</p>
+                                    <p className="text-sm text-slate-400 truncate">{record.content?.substring(0, 80)}...</p>
                                 </div>
                             </div>
-                            <div className="flex items-center space-x-4">
+                            <div className="flex items-center space-x-4 ml-4">
                                 <div className="text-right">
-                                    <p className="text-sm font-medium text-gray-900">Score</p>
-                                    <p className={`text-lg font-bold ${Number(record.score) >= (record.type === 'essay' ? 6 : 60) ? 'text-green-600' : 'text-orange-600'}`}>
-                                        {Number(record.score).toFixed(1)}
-                                    </p>
+                                    <p className="text-xs text-slate-400 mb-1">Score</p>
+                                    <div className="flex items-center">
+                                        <Award className="w-4 h-4 text-amber-400 mr-1" />
+                                        <span className={`text-xl font-bold ${Number(record.score) >= (record.type === 'essay' ? 6 : 60)
+                                                ? 'text-emerald-400'
+                                                : 'text-orange-400'
+                                            }`}>
+                                            {Number(record.score).toFixed(1)}
+                                        </span>
+                                    </div>
                                 </div>
-                                {expanded === record.id ? <ChevronUp className="w-5 h-5 text-gray-400" /> : <ChevronDown className="w-5 h-5 text-gray-400" />}
+                                {expanded === record.id ? (
+                                    <ChevronUp className="w-5 h-5 text-slate-400" />
+                                ) : (
+                                    <ChevronDown className="w-5 h-5 text-slate-400" />
+                                )}
                             </div>
                         </div>
 
                         {expanded === record.id && (
-                            <div className="p-6 bg-gray-50 border-t border-gray-100 space-y-4">
+                            <div className="px-6 py-6 bg-slate-700/20 border-t border-slate-700 space-y-5 animate-slide-up">
                                 <div>
-                                    <h4 className="font-bold text-gray-900 text-sm mb-2">Content</h4>
-                                    <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line bg-white p-3 rounded border border-gray-200">
+                                    <h4 className="font-semibold text-slate-100 text-sm mb-3 flex items-center">
+                                        <div className="w-1 h-4 gradient-bg-purple rounded-full mr-2"></div>
+                                        Content
+                                    </h4>
+                                    <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line bg-slate-800/50 p-4 rounded-lg border border-slate-700">
                                         {record.content}
                                     </p>
                                 </div>
@@ -63,14 +91,20 @@ const Review: React.FC = () => {
                                 {record.type === 'essay' && (
                                     <>
                                         <div>
-                                            <h4 className="font-bold text-gray-900 text-sm mb-2">Your Essay</h4>
-                                            <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line bg-white p-3 rounded border border-gray-200">
+                                            <h4 className="font-semibold text-slate-100 text-sm mb-3 flex items-center">
+                                                <div className="w-1 h-4 gradient-bg-blue rounded-full mr-2"></div>
+                                                Your Essay
+                                            </h4>
+                                            <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line bg-slate-800/50 p-4 rounded-lg border border-slate-700">
                                                 {record.answers}
                                             </p>
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-gray-900 text-sm mb-2">Feedback</h4>
-                                            <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line bg-white p-3 rounded border border-gray-200">
+                                            <h4 className="font-semibold text-slate-100 text-sm mb-3 flex items-center">
+                                                <div className="w-1 h-4 gradient-bg-emerald rounded-full mr-2"></div>
+                                                AI Feedback
+                                            </h4>
+                                            <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line bg-slate-800/50 p-4 rounded-lg border border-slate-700">
                                                 {record.feedback}
                                             </p>
                                         </div>
@@ -78,10 +112,10 @@ const Review: React.FC = () => {
                                 )}
 
                                 {record.type === 'reading' && (
-                                    <div>
-                                        {/* We could reconstruct the reading test view here if we parsed the 'questions' JSON, 
-                                            but let's keep it simple for now or parsing questions if stored as JSON string */}
-                                        <p className="text-sm italic text-gray-500">Detailed question review not implemented in this view version.</p>
+                                    <div className="bg-slate-800/30 p-4 rounded-lg border border-slate-700">
+                                        <p className="text-sm italic text-slate-400">
+                                            Detailed question review not available for reading tests.
+                                        </p>
                                     </div>
                                 )}
                             </div>
@@ -90,8 +124,12 @@ const Review: React.FC = () => {
                 ))}
 
                 {history.length === 0 && (
-                    <div className="p-8 text-center text-gray-500">
-                        No history found.
+                    <div className="p-12 text-center">
+                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-700/50 mb-4">
+                            <BookOpen className="w-8 h-8 text-slate-500" />
+                        </div>
+                        <p className="text-slate-400 mb-4">No history found.</p>
+                        <p className="text-sm text-slate-500">Complete some tests to see your progress here!</p>
                     </div>
                 )}
             </div>

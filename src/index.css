@@ -1,9 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Dark Theme Colors */
+    --bg-primary: #0F172A;
+    --bg-secondary: #1E293B;
+    --bg-tertiary: #334155;
+
+    /* Text Colors */
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --text-muted: #64748B;
+
+    /* Gradient Colors - Purple/Pink */
+    --gradient-purple-start: #8B5CF6;
+    --gradient-purple-end: #EC4899;
+
+    /* Gradient Colors - Blue/Cyan */
+    --gradient-blue-start: #3B82F6;
+    --gradient-blue-end: #06B6D4;
+
+    /* Gradient Colors - Emerald/Teal */
+    --gradient-emerald-start: #10B981;
+    --gradient-emerald-end: #14B8A6;
+
+    /* Gradient Colors - Orange/Amber */
+    --gradient-orange-start: #F59E0B;
+    --gradient-orange-end: #F97316;
+  }
+
+  * {
+    @apply border-gray-700;
+  }
+
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-[#0F172A] text-slate-100;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold;
+  }
+}
+
+@layer components {
+
+  /* Gradient Text Utilities */
+  .gradient-text-purple {
+    @apply bg-gradient-to-r from-violet-500 to-pink-500 bg-clip-text text-transparent;
+  }
+
+  .gradient-text-blue {
+    @apply bg-gradient-to-r from-blue-500 to-cyan-500 bg-clip-text text-transparent;
+  }
+
+  .gradient-text-emerald {
+    @apply bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent;
+  }
+
+  .gradient-text-orange {
+    @apply bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent;
+  }
+
+  /* Gradient Background Utilities */
+  .gradient-bg-purple {
+    @apply bg-gradient-to-r from-violet-500 to-pink-500;
+  }
+
+  .gradient-bg-blue {
+    @apply bg-gradient-to-r from-blue-500 to-cyan-500;
+  }
+
+  .gradient-bg-emerald {
+    @apply bg-gradient-to-r from-emerald-500 to-teal-500;
+  }
+
+  .gradient-bg-orange {
+    @apply bg-gradient-to-r from-amber-500 to-orange-500;
+  }
+
+  /* Card Styles */
+  .card-dark {
+    @apply bg-slate-800 rounded-xl border border-slate-700 shadow-lg;
+  }
+
+  .card-dark-hover {
+    @apply card-dark transition-all duration-300 hover:shadow-xl hover:border-slate-600;
+  }
+
+  /* Button Gradient Styles */
+  .btn-gradient-purple {
+    @apply gradient-bg-purple text-white font-medium px-6 py-2.5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-violet-500/50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+  }
+
+  .btn-gradient-blue {
+    @apply gradient-bg-blue text-white font-medium px-6 py-2.5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-blue-500/50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+  }
+
+  .btn-gradient-emerald {
+    @apply gradient-bg-emerald text-white font-medium px-6 py-2.5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-emerald-500/50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+  }
+
+  .btn-gradient-orange {
+    @apply gradient-bg-orange text-white font-medium px-6 py-2.5 rounded-lg shadow-lg transition-all duration-300 hover:shadow-orange-500/50 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+  }
+
+  /* Input Styles */
+  .input-dark {
+    @apply w-full px-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all;
+  }
+
+  .textarea-dark {
+    @apply input-dark resize-none min-h-[200px];
+  }
+
+  /* Animation Utilities */
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+}
+
+@layer utilities {
+
+  /* Glow Effects */
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+
+  .glow-blue {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+
+  .glow-emerald {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  }
+
+  .glow-orange {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+  }
+}
+
+/* Keyframe Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

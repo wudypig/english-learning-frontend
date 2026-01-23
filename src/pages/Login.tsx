@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import { useAuth } from '../context/AuthContext';
+import { LogIn, Mail, Lock, Sparkles } from 'lucide-react';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -30,48 +31,92 @@ const Login: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-md w-96">
-                <div className="text-center mb-6">
-                    <h1 className="text-3xl font-bold text-blue-600 mb-2">Write Nest</h1>
-                    <p className="text-sm text-gray-600">AI-Powered English Learning</p>
-                </div>
-                <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
-                {error && <div className="bg-red-50 text-red-600 p-3 rounded mb-4 text-sm">{error}</div>}
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-[#0F172A] to-slate-900 px-4">
+            {/* Decorative Background Elements */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl"></div>
+            </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Email</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
-                            required
-                        />
+            <div className="relative w-full max-w-md">
+                {/* Logo/Brand */}
+                <div className="text-center mb-8 animate-fade-in">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-bg-purple shadow-lg glow-purple mb-4">
+                        <Sparkles className="w-8 h-8 text-white" />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Password</label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 border p-2"
-                            required
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50"
-                    >
-                        {loading ? 'Logging in...' : 'Login'}
-                    </button>
-                </form>
-
-                <div className="mt-4 text-center text-sm">
-                    Don't have an account? <Link to="/register" className="text-blue-600 hover:underline">Register</Link>
+                    <h1 className="text-4xl font-bold gradient-text-purple mb-2">Write Nest</h1>
+                    <p className="text-slate-400">AI-Powered English Learning</p>
                 </div>
+
+                {/* Login Card */}
+                <div className="card-dark p-8 animate-scale-in">
+                    <h2 className="text-2xl font-bold text-slate-100 mb-6">Welcome Back</h2>
+
+                    {error && (
+                        <div className="mb-4 p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm animate-slide-up">
+                            {error}
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit} className="space-y-5">
+                        <div>
+                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                                Email Address
+                            </label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                                <input
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="input-dark pl-11"
+                                    placeholder="your@email.com"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                                Password
+                            </label>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                                <input
+                                    type="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="input-dark pl-11"
+                                    placeholder="••••••••"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full btn-gradient-purple flex items-center justify-center"
+                        >
+                            <LogIn className="w-4 h-4 mr-2" />
+                            {loading ? 'Logging in...' : 'Login'}
+                        </button>
+                    </form>
+
+                    <div className="mt-6 text-center">
+                        <p className="text-sm text-slate-400">
+                            Don't have an account?{' '}
+                            <Link to="/register" className="text-violet-400 hover:text-violet-300 font-medium transition-colors">
+                                Sign up
+                            </Link>
+                        </p>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <p className="text-center text-slate-500 text-sm mt-6">
+                    Improve your English with AI-powered feedback
+                </p>
             </div>
         </div>
     );
