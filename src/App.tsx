@@ -8,6 +8,8 @@ import Essay from './pages/Essay';
 import Reading from './pages/Reading';
 import Review from './pages/Review';
 import Settings from './pages/Settings';
+import SearchResults from './pages/SearchResults';
+import UserDashboard from './pages/UserDashboard';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -77,6 +79,26 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <Settings />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/search"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <SearchResults />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users/:userId"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <UserDashboard />
                 </Layout>
               </ProtectedRoute>
             }
