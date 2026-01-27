@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { BookOpen, PenTool, LayoutDashboard, Settings, LogOut, History, Menu, X, ChevronDown } from 'lucide-react';
+import SearchBar from './SearchBar';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { user, logout } = useAuth();
@@ -55,6 +56,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                             <h1 className="text-2xl font-bold gradient-text-purple">
                                 Write Nest
                             </h1>
+                        </div>
+
+                        {/* Search Bar (Desktop) */}
+                        <div className="hidden lg:flex flex-1 max-w-md mx-6">
+                            <SearchBar />
                         </div>
 
                         {/* Desktop Navigation */}
