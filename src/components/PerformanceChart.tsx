@@ -68,14 +68,14 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({ data }) => {
 
     return (
         <div className="card-dark p-6">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <h3 className="text-xl font-bold text-slate-100">Performance Trends</h3>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                     {periods.map((p) => (
                         <button
                             key={p.value}
                             onClick={() => setPeriod(p.value)}
-                            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all ${period === p.value
+                            className={`px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg transition-all whitespace-nowrap ${period === p.value
                                     ? 'bg-gradient-to-r from-violet-500 to-pink-500 text-white shadow-lg'
                                     : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700'
                                 }`}

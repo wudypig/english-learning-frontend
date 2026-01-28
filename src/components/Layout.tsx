@@ -142,6 +142,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 {/* Mobile Navigation Menu */}
                 {mobileMenuOpen && (
                     <div className="md:hidden border-t border-slate-700 bg-slate-800 animate-slide-up">
+                        {/* Mobile Search Bar */}
+                        <div className="px-4 pt-4 pb-2">
+                            <SearchBar />
+                        </div>
+
                         <div className="px-4 py-3 space-y-1">
                             {navItems.map((item) => {
                                 const Icon = item.icon;
