@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../lib/api';
-import { UserPlus, Mail, Lock, User, Sparkles } from 'lucide-react';
+import { UserPlus, Mail, Lock, User } from 'lucide-react';
 
 const Register: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -16,7 +16,6 @@ const Register: React.FC = () => {
         e.preventDefault();
         setLoading(true);
         setError('');
-
         try {
             await api.post('/auth/register', { email, password, nickname });
             navigate('/login');
@@ -28,45 +27,37 @@ const Register: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-[#0F172A] to-slate-900 px-4">
-            {/* Decorative Background Elements */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
-            </div>
+        <div className="min-h-screen flex items-center justify-center bg-[#F7F4EF] px-4">
+            <div className="w-full max-w-md animate-fade-in">
 
-            <div className="relative w-full max-w-md">
-                {/* Logo/Brand */}
-                <div className="text-center mb-8 animate-fade-in">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-bg-blue shadow-lg glow-blue mb-4">
-                        <Sparkles className="w-8 h-8 text-white" />
-                    </div>
-                    <h1 className="text-4xl font-bold gradient-text-blue mb-2">Write Nest</h1>
-                    <p className="text-slate-400">AI-Powered English Learning</p>
+                {/* Brand */}
+                <div className="text-center mb-8">
+                    <h1 className="font-display text-4xl font-bold text-[#1D4ED8] mb-1">Write Nest</h1>
+                    <p className="text-stone-500 text-sm">AI-Powered English Learning</p>
                 </div>
 
-                {/* Register Card */}
+                {/* Card */}
                 <div className="card-dark p-8 animate-scale-in">
-                    <h2 className="text-2xl font-bold text-slate-100 mb-6">Create Account</h2>
+                    <h2 className="text-xl font-semibold text-stone-900 mb-6">Create your account</h2>
 
                     {error && (
-                        <div className="mb-4 p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm animate-slide-up">
+                        <div className="mb-5 p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm animate-slide-up">
                             {error}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                            <label className="block text-sm font-medium text-stone-700 mb-1.5">
                                 Email Address
                             </label>
                             <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
                                 <input
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="input-dark pl-11"
+                                    className="input-dark pl-10"
                                     placeholder="your@email.com"
                                     required
                                 />
@@ -74,32 +65,32 @@ const Register: React.FC = () => {
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-300 mb-2">
-                                Nickname (Optional)
+                            <label className="block text-sm font-medium text-stone-700 mb-1.5">
+                                Nickname <span className="text-stone-400 font-normal">(optional)</span>
                             </label>
                             <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
                                 <input
                                     type="text"
                                     value={nickname}
                                     onChange={(e) => setNickname(e.target.value)}
-                                    className="input-dark pl-11"
+                                    className="input-dark pl-10"
                                     placeholder="Your name"
                                 />
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                            <label className="block text-sm font-medium text-stone-700 mb-1.5">
                                 Password
                             </label>
                             <div className="relative">
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
                                 <input
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="input-dark pl-11"
+                                    className="input-dark pl-10"
                                     placeholder="••••••••"
                                     required
                                 />
@@ -109,25 +100,22 @@ const Register: React.FC = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full btn-gradient-blue flex items-center justify-center"
+                            className="w-full btn-gradient-purple mt-2"
                         >
                             <UserPlus className="w-4 h-4 mr-2" />
-                            {loading ? 'Creating Account...' : 'Create Account'}
+                            {loading ? 'Creating Account…' : 'Create Account'}
                         </button>
                     </form>
 
-                    <div className="mt-6 text-center">
-                        <p className="text-sm text-slate-400">
-                            Already have an account?{' '}
-                            <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
-                                Login
-                            </Link>
-                        </p>
-                    </div>
+                    <p className="mt-5 text-center text-sm text-stone-500">
+                        Already have an account?{' '}
+                        <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
+                            Login
+                        </Link>
+                    </p>
                 </div>
 
-                {/* Footer */}
-                <p className="text-center text-slate-500 text-sm mt-6">
+                <p className="text-center text-stone-400 text-xs mt-6">
                     Join us and start your English learning journey
                 </p>
             </div>

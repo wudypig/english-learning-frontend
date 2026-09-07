@@ -17,49 +17,43 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         navigate('/login');
     };
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
                 setUserDropdownOpen(false);
             }
         };
-
         if (userDropdownOpen) {
             document.addEventListener('mousedown', handleClickOutside);
         }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [userDropdownOpen]);
 
-    if (!user) {
-        return <>{children}</>;
-    }
+    if (!user) return <>{children}</>;
 
     const navItems = [
-        { label: 'Dashboard', path: '/', icon: LayoutDashboard },
-        { label: 'Essay Writing', path: '/essay', icon: PenTool },
-        { label: 'Reading Test', path: '/reading', icon: BookOpen },
-        { label: 'Review', path: '/review', icon: History },
+        { label: 'Dashboard',    path: '/',        icon: LayoutDashboard },
+        { label: 'Essay Writing', path: '/essay',   icon: PenTool },
+        { label: 'Reading Test',  path: '/reading', icon: BookOpen },
+        { label: 'Review',        path: '/review',  icon: History },
     ];
 
     return (
-        <div className="min-h-screen bg-[#0F172A]">
+        <div className="min-h-screen bg-[#F7F4EF]">
             {/* Top Navigation Bar */}
-            <nav className="bg-slate-800 border-b border-slate-700 sticky top-0 z-50 shadow-lg">
+            <nav className="bg-white border-b border-[#E2DDD6] sticky top-0 z-50 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
+
                         {/* Logo */}
                         <div className="flex-shrink-0">
-                            <h1 className="text-2xl font-bold gradient-text-purple">
+                            <h1 className="text-xl font-display font-bold text-[#1D4ED8] tracking-tight">
                                 Write Nest
                             </h1>
                         </div>
 
                         {/* Search Bar (Desktop) */}
-                        <div className="hidden lg:flex flex-1 max-w-md mx-6">
+                        <div className="hidden lg:flex flex-1 max-w-sm mx-8">
                             <SearchBar />
                         </div>
 
@@ -68,17 +62,17 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                             {navItems.map((item) => {
                                 const Icon = item.icon;
                                 const isActive = location.pathname === item.path;
-
                                 return (
                                     <Link
                                         key={item.path}
                                         to={item.path}
-                                        className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isActive
-                                            ? 'bg-gradient-to-r from-violet-500 to-pink-500 text-white shadow-lg'
-                                            : 'text-slate-300 hover:text-white hover:bg-slate-700'
-                                            }`}
+                                        className={`flex items-center px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
+                                            isActive
+                                                ? 'bg-blue-700 text-white shadow-sm'
+                                                : 'text-stone-600 hover:text-stone-900 hover:bg-stone-100'
+                                        }`}
                                     >
-                                        <Icon className="w-4 h-4 mr-2" />
+                                        <Icon className="w-4 h-4 mr-1.5" />
                                         {item.label}
                                     </Link>
                                 );
@@ -86,40 +80,40 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                         </div>
 
                         {/* User Dropdown (Desktop) */}
-                        <div className="hidden md:block relative" ref={dropdownRef}>
+                        <div className="hidden md:block relative ml-4" ref={dropdownRef}>
                             <button
                                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                                className="flex items-center space-x-3 px-3 py-2 rounded-lg hover:bg-slate-700 transition-colors"
+                                className="flex items-center space-x-2.5 px-3 py-2 rounded-lg hover:bg-stone-100 transition-colors"
                             >
-                                <div className="w-8 h-8 rounded-full gradient-bg-purple flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                                <div className="w-8 h-8 rounded-full gradient-bg-purple flex items-center justify-center text-white font-semibold text-sm shadow-sm">
                                     {user.nickname?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
                                 </div>
                                 <div className="hidden lg:block text-left">
-                                    <p className="text-sm font-medium text-slate-200">{user.nickname || 'User'}</p>
-                                    <p className="text-xs text-slate-400">{user.email}</p>
+                                    <p className="text-sm font-medium text-stone-800 leading-tight">{user.nickname || 'User'}</p>
+                                    <p className="text-xs text-stone-500">{user.email}</p>
                                 </div>
-                                <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${userDropdownOpen ? 'rotate-180' : ''}`} />
+                                <ChevronDown className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${userDropdownOpen ? 'rotate-180' : ''}`} />
                             </button>
 
                             {/* Dropdown Menu */}
                             {userDropdownOpen && (
-                                <div className="absolute right-0 mt-2 w-56 card-dark shadow-2xl animate-slide-up overflow-hidden">
-                                    <div className="px-4 py-3 border-b border-slate-700">
-                                        <p className="text-sm font-medium text-slate-200">{user.nickname || 'User'}</p>
-                                        <p className="text-xs text-slate-400 truncate">{user.email}</p>
+                                <div className="absolute right-0 mt-2 w-56 card-dark shadow-lg animate-slide-up overflow-hidden">
+                                    <div className="px-4 py-3 border-b border-[#E2DDD6]">
+                                        <p className="text-sm font-semibold text-stone-800">{user.nickname || 'User'}</p>
+                                        <p className="text-xs text-stone-500 truncate">{user.email}</p>
                                     </div>
-                                    <div className="py-2">
+                                    <div className="py-1">
                                         <Link
                                             to="/settings"
                                             onClick={() => setUserDropdownOpen(false)}
-                                            className="flex items-center px-4 py-2 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                                            className="flex items-center px-4 py-2.5 text-sm text-stone-700 hover:bg-stone-50 hover:text-stone-900 transition-colors"
                                         >
-                                            <Settings className="w-4 h-4 mr-3" />
+                                            <Settings className="w-4 h-4 mr-3 text-stone-400" />
                                             Settings
                                         </Link>
                                         <button
                                             onClick={handleLogout}
-                                            className="flex items-center w-full px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+                                            className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
                                         >
                                             <LogOut className="w-4 h-4 mr-3" />
                                             Logout
@@ -132,69 +126,63 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                         {/* Mobile Menu Button */}
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="md:hidden p-2 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                            className="md:hidden p-2 rounded-lg text-stone-500 hover:bg-stone-100 hover:text-stone-700 transition-colors"
                         >
-                            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                         </button>
                     </div>
                 </div>
 
                 {/* Mobile Navigation Menu */}
                 {mobileMenuOpen && (
-                    <div className="md:hidden border-t border-slate-700 bg-slate-800 animate-slide-up">
-                        {/* Mobile Search Bar */}
-                        <div className="px-4 pt-4 pb-2">
+                    <div className="md:hidden border-t border-[#E2DDD6] bg-white animate-slide-up">
+                        <div className="px-4 pt-3 pb-2">
                             <SearchBar />
                         </div>
-
-                        <div className="px-4 py-3 space-y-1">
+                        <div className="px-4 py-2 space-y-0.5">
                             {navItems.map((item) => {
                                 const Icon = item.icon;
                                 const isActive = location.pathname === item.path;
-
                                 return (
                                     <Link
                                         key={item.path}
                                         to={item.path}
                                         onClick={() => setMobileMenuOpen(false)}
-                                        className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all ${isActive
-                                            ? 'bg-gradient-to-r from-violet-500 to-pink-500 text-white'
-                                            : 'text-slate-300 hover:bg-slate-700 hover:text-white'
-                                            }`}
+                                        className={`flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                                            isActive
+                                                ? 'bg-blue-700 text-white'
+                                                : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900'
+                                        }`}
                                     >
-                                        <Icon className="w-5 h-5 mr-3" />
+                                        <Icon className="w-4 h-4 mr-3" />
                                         {item.label}
                                     </Link>
                                 );
                             })}
 
-                            {/* Mobile User Section */}
-                            <div className="border-t border-slate-700 mt-3 pt-3">
-                                <div className="flex items-center px-4 py-2 mb-2">
-                                    <div className="w-10 h-10 rounded-full gradient-bg-purple flex items-center justify-center text-white font-bold shadow-lg">
+                            <div className="border-t border-[#E2DDD6] mt-2 pt-2">
+                                <div className="flex items-center px-3 py-2 mb-1">
+                                    <div className="w-9 h-9 rounded-full gradient-bg-purple flex items-center justify-center text-white font-semibold shadow-sm">
                                         {user.nickname?.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase()}
                                     </div>
                                     <div className="ml-3">
-                                        <p className="text-sm font-medium text-slate-200">{user.nickname || 'User'}</p>
-                                        <p className="text-xs text-slate-400 truncate">{user.email}</p>
+                                        <p className="text-sm font-medium text-stone-800">{user.nickname || 'User'}</p>
+                                        <p className="text-xs text-stone-500 truncate">{user.email}</p>
                                     </div>
                                 </div>
                                 <Link
                                     to="/settings"
                                     onClick={() => setMobileMenuOpen(false)}
-                                    className="flex items-center px-4 py-3 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                                    className="flex items-center px-3 py-2.5 rounded-lg text-sm font-medium text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition-colors"
                                 >
-                                    <Settings className="w-5 h-5 mr-3" />
+                                    <Settings className="w-4 h-4 mr-3 text-stone-400" />
                                     Settings
                                 </Link>
                                 <button
-                                    onClick={() => {
-                                        setMobileMenuOpen(false);
-                                        handleLogout();
-                                    }}
-                                    className="flex items-center w-full px-4 py-3 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-colors"
+                                    onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
+                                    className="flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
                                 >
-                                    <LogOut className="w-5 h-5 mr-3" />
+                                    <LogOut className="w-4 h-4 mr-3" />
                                     Logout
                                 </button>
                             </div>

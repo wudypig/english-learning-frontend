@@ -47,7 +47,7 @@ const Essay: React.FC = () => {
         try {
             const res = await api.post('/content/explain', { text: article, language: 'Chinese' });
             setExplanation(res.data.explanation);
-        } catch (err) {
+        } catch {
             alert('Failed to explain.');
         } finally {
             setExplaining(false);
@@ -55,11 +55,11 @@ const Essay: React.FC = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6 animate-fade-in">
+        <div className="max-w-3xl mx-auto space-y-6 animate-fade-in">
             <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-slate-100 mb-2">Essay Writing</h1>
-                    <p className="text-slate-400">Practice your writing skills with AI-generated topics</p>
+                    <h1 className="text-2xl font-semibold text-stone-900 mb-1">Essay Writing</h1>
+                    <p className="text-stone-500 text-sm">Practice your writing with AI-generated topics</p>
                 </div>
                 <button
                     onClick={startNew}
@@ -67,126 +67,128 @@ const Essay: React.FC = () => {
                     className="btn-gradient-purple flex items-center"
                 >
                     <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                    {loading ? 'Generating...' : (article ? 'New Topic' : 'Start Writing')}
+                    {loading ? 'Generating…' : (article ? 'New Topic' : 'Start Writing')}
                 </button>
             </header>
 
             {error && (
-                <div className="card-dark border-red-500/50 bg-red-500/10 p-4 flex items-start animate-slide-up">
-                    <AlertCircle className="w-5 h-5 text-red-400 mr-3 flex-shrink-0 mt-0.5" />
-                    <span className="text-red-400">{error}</span>
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start animate-slide-up">
+                    <AlertCircle className="w-4 h-4 text-red-500 mr-3 flex-shrink-0 mt-0.5" />
+                    <span className="text-red-700 text-sm">{error}</span>
                 </div>
             )}
 
+            {/* Empty state */}
             {!article && !loading && !error && (
                 <div className="text-center py-20 card-dark border-dashed">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full gradient-bg-purple mb-6 glow-purple">
-                        <FileText className="w-10 h-10 text-white" />
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full gradient-bg-purple mb-5 glow-purple">
+                        <FileText className="w-8 h-8 text-white" />
                     </div>
-                    <h3 className="text-xl font-semibold text-slate-100 mb-2">Ready to Start?</h3>
-                    <p className="text-slate-400 mb-6">Click "Start Writing" to generate your first topic</p>
+                    <h3 className="text-base font-semibold text-stone-800 mb-1.5">Ready to Start?</h3>
+                    <p className="text-stone-500 text-sm">Click "Start Writing" to generate your first topic</p>
                 </div>
             )}
 
             {article && (
-                <div className="space-y-6">
-                    {/* Article Card */}
+                <div className="space-y-5">
+                    {/* Topic Article */}
                     <div className="card-dark p-6 animate-scale-in">
-                        <div className="flex justify-between items-start mb-4">
+                        <div className="flex justify-between items-center mb-4">
                             <div className="flex items-center">
-                                <div className="w-10 h-10 rounded-lg gradient-bg-purple flex items-center justify-center mr-3">
-                                    <FileText className="w-5 h-5 text-white" />
+                                <div className="w-8 h-8 rounded-lg gradient-bg-purple flex items-center justify-center mr-3">
+                                    <FileText className="w-4 h-4 text-white" />
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-100">Topic Article</h3>
+                                <h3 className="text-base font-semibold text-stone-800">Topic Article</h3>
                             </div>
                             {result && (
                                 <button
                                     onClick={explainArticle}
                                     disabled={explaining}
-                                    className="text-sm text-violet-400 hover:text-violet-300 flex items-center transition-colors"
+                                    className="text-sm text-blue-600 hover:text-blue-700 flex items-center transition-colors"
                                 >
-                                    <HelpCircle className="w-4 h-4 mr-1" />
-                                    {explaining ? 'Explaining...' : 'Explain in Chinese'}
+                                    <HelpCircle className="w-3.5 h-3.5 mr-1.5" />
+                                    {explaining ? 'Explaining…' : 'Explain in Chinese'}
                                 </button>
                             )}
                         </div>
-                        <div className="prose prose-invert max-w-none text-slate-300 leading-relaxed whitespace-pre-line">
+
+                        {/* Article body in reading font */}
+                        <div className="font-reading text-stone-800 whitespace-pre-line">
                             {article}
                         </div>
+
                         {explanation && (
-                            <div className="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg animate-slide-up">
-                                <h4 className="text-sm font-bold text-amber-400 mb-2 flex items-center">
-                                    <Sparkles className="w-4 h-4 mr-2" />
+                            <div className="mt-5 p-4 bg-amber-50 border border-amber-200 rounded-lg animate-slide-up">
+                                <h4 className="text-sm font-semibold text-amber-700 mb-2 flex items-center">
+                                    <Sparkles className="w-3.5 h-3.5 mr-1.5" />
                                     Chinese Explanation
                                 </h4>
-                                <p className="text-amber-200/90 text-sm leading-relaxed">{explanation}</p>
+                                <p className="text-amber-800 text-sm leading-relaxed">{explanation}</p>
                             </div>
                         )}
                     </div>
 
-                    {/* Essay Writing Section */}
+                    {/* Essay Textarea */}
                     {!result && (
-                        <div className="card-dark p-6 animate-scale-in" style={{ animationDelay: '0.1s' }}>
-                            <h3 className="text-xl font-bold text-slate-100 mb-4">Your Essay</h3>
+                        <div className="card-dark p-6 animate-scale-in" style={{ animationDelay: '0.05s' }}>
+                            <h3 className="text-base font-semibold text-stone-800 mb-3">Your Essay</h3>
                             <textarea
                                 value={essay}
                                 onChange={(e) => setEssay(e.target.value)}
-                                placeholder="Write your essay here..."
-                                className="textarea-dark min-h-[300px]"
+                                placeholder="Write your essay here…"
+                                className="textarea-dark min-h-[280px]"
                             />
-                            <div className="mt-6 flex justify-end">
+                            <div className="mt-4 flex items-center justify-between">
+                                <p className="text-xs text-stone-400">
+                                    {essay.trim().split(/\s+/).filter(Boolean).length} words
+                                </p>
                                 <button
                                     onClick={submitEssay}
                                     disabled={loading || !essay.trim()}
-                                    className="btn-gradient-emerald flex items-center"
+                                    className="btn-gradient-emerald"
                                 >
                                     <Send className="w-4 h-4 mr-2" />
-                                    {loading ? 'Grading...' : 'Submit Essay'}
+                                    {loading ? 'Grading…' : 'Submit Essay'}
                                 </button>
                             </div>
                         </div>
                     )}
 
-                    {/* Feedback Card */}
+                    {/* Feedback */}
                     {result && (
-                        <div className="card-dark p-6 animate-scale-in overflow-hidden relative" style={{ animationDelay: '0.1s' }}>
-                            {/* Decorative gradient */}
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-violet-500/10 to-pink-500/10 rounded-full blur-3xl"></div>
-
-                            <div className="relative">
-                                <div className="flex items-center justify-between mb-6">
-                                    <div className="flex items-center">
-                                        <div className="w-12 h-12 rounded-xl gradient-bg-purple flex items-center justify-center mr-3">
-                                            <Award className="w-6 h-6 text-white" />
-                                        </div>
-                                        <h3 className="text-2xl font-bold text-slate-100">Your Result</h3>
+                        <div className="card-dark p-6 animate-scale-in" style={{ animationDelay: '0.05s' }}>
+                            <div className="flex items-center justify-between mb-5">
+                                <div className="flex items-center">
+                                    <div className="w-9 h-9 rounded-lg gradient-bg-purple flex items-center justify-center mr-3">
+                                        <Award className="w-5 h-5 text-white" />
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-sm text-slate-400 mb-1">Score</p>
-                                        <p className="text-4xl font-bold gradient-text-purple">
-                                            {result.score.toFixed(1)}
-                                            <span className="text-lg text-slate-400 ml-1">/10</span>
-                                        </p>
-                                    </div>
+                                    <h3 className="text-base font-semibold text-stone-800">Your Result</h3>
                                 </div>
-
-                                <div className="bg-slate-700/30 rounded-lg p-5 border border-slate-600/50">
-                                    <h4 className="text-sm font-semibold text-slate-300 mb-3 flex items-center">
-                                        <Sparkles className="w-4 h-4 mr-2 text-violet-400" />
-                                        AI Feedback
-                                    </h4>
-                                    <p className="text-slate-300 leading-relaxed whitespace-pre-line">
-                                        {result.feedback}
+                                <div className="text-right">
+                                    <p className="text-xs text-stone-400 mb-0.5">Score</p>
+                                    <p className="text-3xl font-bold text-[#1D4ED8]">
+                                        {result.score.toFixed(1)}
+                                        <span className="text-base font-normal text-stone-400 ml-1">/10</span>
                                     </p>
                                 </div>
-
-                                <button
-                                    onClick={startNew}
-                                    className="mt-6 w-full py-3 bg-slate-700/50 hover:bg-slate-700 text-slate-100 rounded-lg font-medium transition-colors border border-slate-600"
-                                >
-                                    Try Another Topic
-                                </button>
                             </div>
+
+                            <div className="bg-[#F7F4EF] rounded-lg p-5 border border-[#E2DDD6]">
+                                <h4 className="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-3 flex items-center">
+                                    <Sparkles className="w-3.5 h-3.5 mr-1.5 text-[#1D4ED8]" />
+                                    AI Feedback
+                                </h4>
+                                <p className="text-stone-700 text-sm leading-relaxed whitespace-pre-line font-reading">
+                                    {result.feedback}
+                                </p>
+                            </div>
+
+                            <button
+                                onClick={startNew}
+                                className="mt-5 w-full py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 rounded-lg text-sm font-medium transition-colors border border-[#E2DDD6]"
+                            >
+                                Try Another Topic
+                            </button>
                         </div>
                     )}
                 </div>
