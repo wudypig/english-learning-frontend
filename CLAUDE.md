@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-User-facing English learning SPA. React 19 + TypeScript + Vite, dark-themed, deployed to Firebase Hosting. App name: **Write Nest**.
+User-facing English learning SPA. React 19 + TypeScript + Vite, light/warm theme optimized for reading, deployed to Firebase Hosting. App name: **Write Nest**.
 
 ## Commands
 
@@ -92,20 +92,81 @@ All functions operate on `TestRecord[]`:
 **UserDashboard** (`/users/:userId`):
 - `GET /user/:userId/dashboard` returns 403 if dashboard is set to private → shows lock icon
 
-### Styling System
+### Design Guidelines
 
-Global custom classes defined in `index.css` (Tailwind-based):
+#### Color Scheme
 
-| Class | Usage |
-|-------|-------|
-| `.card-dark` | Standard dark card (border + shadow) |
-| `.btn-gradient-purple/blue/emerald/orange` | Gradient buttons with hover scale |
-| `.input-dark` / `.textarea-dark` | Form inputs with focus ring |
-| `.gradient-text-*` / `.gradient-bg-*` | Gradient text and backgrounds |
-| `.glow-purple/blue/emerald/orange` | Box shadow glow effects |
-| `.animate-slide-up/fade-in/scale-in` | Entry animations |
+Defined as CSS variables in `index.css`. Always use these variables or the mapped Tailwind classes — never hardcode raw hex values except when referencing these same tokens.
 
-Color scheme: dark navy (`#0F172A`) background, slate grays, purple/pink as primary gradient. All pages use this dark theme.
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--bg-page` | `#F7F4EF` | Page background — warm off-white |
+| `--bg-surface` | `#FFFFFF` | Cards and elevated surfaces |
+| `--bg-surface-alt` | `#F0ECE5` | Alternate surface (disabled inputs, privacy rows) |
+| `--border` | `#E2DDD6` | All borders and dividers |
+| `--text-primary` | `#1C1917` | Main body text |
+| `--text-secondary` | `#78716C` | Supporting labels, descriptions |
+| `--text-muted` | `#A8A29E` | Placeholders, timestamps, captions |
+| `--accent` | `#1D4ED8` | Primary action — buttons, links, active nav, focus rings |
+| `--accent-dark` | `#1E40AF` | Accent hover state |
+| `--success` | `#047857` | Correct answers, good scores, save confirmations |
+| `--warm` | `#B45309` | Secondary emphasis (amber) |
+| `--danger` | `#B91C1C` | Errors, wrong answers |
+
+In Tailwind JSX, use `stone-*` for grays (not `slate-*`) and explicit hex values like `text-[#1D4ED8]` when a CSS variable is not available as a utility.
+
+#### Typography
+
+Three font families loaded from Google Fonts. Each has a specific role — do not swap them.
+
+| Font | Tailwind class | Role |
+|------|----------------|------|
+| `Playfair Display` | `font-display` | Logo / brand name only |
+| `DM Sans` | `font-body` (default body) | All UI text — nav, buttons, labels, forms |
+| `Lora` | `font-reading` | Article content, essay textarea, AI feedback body |
+
+**Key rule:** Any text the user reads at length (article body, essay prompt, feedback) must use `font-reading` (Lora serif). The `.textarea-dark` class already applies Lora automatically.
+
+Font size guidelines:
+- Page headings: `text-2xl` to `text-3xl`, `font-semibold`
+- Section headings: `text-base`, `font-semibold`
+- Body / UI labels: `text-sm` (14px default via DM Sans)
+- Reading content: `text-[1.05rem]` with `leading-[1.85]` (set in `.prose-reading` / `.textarea-dark`)
+
+#### Component Classes (defined in `index.css`)
+
+| Class | Description |
+|-------|-------------|
+| `.card-dark` | White card, warm border, subtle shadow — used for all content panels |
+| `.card-dark-hover` | Same as card-dark + lift-on-hover transition |
+| `.btn-gradient-purple` | Primary action button — blue (`--accent`) |
+| `.btn-gradient-emerald` | Success/reading action button — green (`--success`) |
+| `.btn-gradient-blue` | Secondary action button — ocean blue (`#0369A1`) |
+| `.btn-gradient-orange` | Warm/amber action button |
+| `.input-dark` | Light text input with warm border and blue focus ring |
+| `.textarea-dark` | Essay textarea — Lora font, 1.85 line-height, resizable |
+| `.gradient-text-*` | Solid accent-colored text (not actual gradients) |
+| `.gradient-bg-*` | Solid accent-colored background for icon containers |
+| `.glow-*` | Soft drop shadow for icon containers |
+| `.animate-slide-up/fade-in/scale-in` | Entry animations (0.25–0.3s ease-out) |
+
+#### UI Patterns
+
+**Error states:** `bg-red-50 border border-red-200 text-red-700 rounded-lg p-3.5`
+
+**Success states:** `bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg p-3.5`
+
+**Explanation panels (Chinese):** `bg-amber-50 border border-amber-200 text-amber-800`
+
+**Reading option buttons (Reading page):**
+- Default: `border border-[#E2DDD6] bg-white text-stone-700 hover:bg-stone-50`
+- Selected: `border-2 border-blue-500 bg-blue-50 text-blue-900`
+- Correct: `border-2 border-emerald-400 bg-emerald-50 text-emerald-900`
+- Wrong: `border-2 border-red-400 bg-red-50 text-red-900`
+
+**Active nav link:** `bg-blue-700 text-white`
+
+**Toggle switches (Settings):** `bg-blue-600` when on, `bg-stone-300` when off
 
 ### API Endpoints Used
 
