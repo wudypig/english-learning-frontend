@@ -23,7 +23,6 @@ const Dashboard: React.FC = () => {
         fetchProfile();
     }, []);
 
-    // Helper to find remaining attempts
     const getRemaining = (type: string) => {
         const limit = stats?.user?.usageLimits?.find((l: any) => l.testType === type);
         if (!limit) return 'N/A';
@@ -31,7 +30,6 @@ const Dashboard: React.FC = () => {
         return limit.remainingAttempts;
     };
 
-    // Calculate analytics data
     const analytics = useMemo(() => {
         const history = stats?.history || [];
         return {
@@ -46,39 +44,39 @@ const Dashboard: React.FC = () => {
     return (
         <div className="space-y-8 animate-fade-in">
             {/* Welcome Header */}
-            <header className="text-center md:text-left">
-                <h1 className="text-4xl md:text-5xl font-bold text-slate-100 mb-3">
-                    Welcome back, <span className="gradient-text-purple">{user?.nickname || 'Learner'}</span>! 👋
+            <header>
+                <h1 className="text-3xl md:text-4xl font-semibold text-stone-900 mb-1">
+                    Welcome back, <span className="text-[#1D4ED8]">{user?.nickname || 'Learner'}</span>
                 </h1>
-                <p className="text-slate-400 text-lg">Ready to improve your English today?</p>
+                <p className="text-stone-500">Ready to improve your English today?</p>
             </header>
 
-            {/* Analytics Stats */}
+            {/* Stats */}
             {stats?.history && stats.history.length > 0 && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <StatCard
                         label="Total Tests"
                         value={analytics.totalTests}
                         gradient="blue"
-                        icon={<Target className="w-6 h-6 text-white" />}
+                        icon={<Target className="w-5 h-5 text-white" />}
                     />
                     <StatCard
                         label="Avg Essay Score"
                         value={analytics.avgEssay > 0 ? analytics.avgEssay.toFixed(1) : 'N/A'}
                         gradient="purple"
-                        icon={<PenTool className="w-6 h-6 text-white" />}
+                        icon={<PenTool className="w-5 h-5 text-white" />}
                     />
                     <StatCard
                         label="Avg Reading Score"
                         value={analytics.avgReading > 0 ? analytics.avgReading.toFixed(1) : 'N/A'}
                         gradient="emerald"
-                        icon={<BookOpen className="w-6 h-6 text-white" />}
+                        icon={<BookOpen className="w-5 h-5 text-white" />}
                     />
                     <StatCard
                         label="Current Streak"
                         value={`${analytics.streak} ${analytics.streak === 1 ? 'day' : 'days'}`}
                         gradient="orange"
-                        icon={<Flame className="w-6 h-6 text-white" />}
+                        icon={<Flame className="w-5 h-5 text-white" />}
                     />
                 </div>
             )}
@@ -89,138 +87,119 @@ const Dashboard: React.FC = () => {
             )}
 
             {/* Practice Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Essay Writing Card */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {/* Essay Writing */}
                 <div className="card-dark-hover overflow-hidden group relative animate-scale-in">
-                    {/* Gradient Border Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-pink-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-
-                    <div className="relative p-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl gradient-bg-purple shadow-lg glow-purple">
-                                <PenTool className="w-7 h-7 text-white" />
+                    <div className="p-6">
+                        <div className="flex items-start justify-between mb-4">
+                            <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl gradient-bg-purple glow-purple">
+                                <PenTool className="w-5 h-5 text-white" />
                             </div>
                             <div className="text-right">
-                                <p className="text-xs text-slate-400 mb-1">Attempts Left</p>
-                                <p className="text-2xl font-bold gradient-text-purple">{getRemaining('essay')}</p>
+                                <p className="text-xs text-stone-400 mb-0.5">Attempts Left</p>
+                                <p className="text-xl font-bold text-[#1D4ED8]">{getRemaining('essay')}</p>
                             </div>
                         </div>
-
-                        <h3 className="text-2xl font-bold text-slate-100 mb-3">Essay Writing</h3>
-                        <p className="text-slate-400 mb-6 leading-relaxed">
-                            Practice your writing skills with AI-generated topics and get instant, detailed feedback to improve.
+                        <h3 className="text-lg font-semibold text-stone-900 mb-2">Essay Writing</h3>
+                        <p className="text-stone-500 text-sm mb-5 leading-relaxed">
+                            Practice writing with AI-generated topics and receive instant, detailed feedback.
                         </p>
-
                         <Link
                             to="/essay"
-                            className="btn-gradient-purple w-full flex items-center justify-center group"
+                            className="btn-gradient-purple w-full"
                         >
                             Start Writing
-                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
                         </Link>
                     </div>
                 </div>
 
-                {/* Reading Test Card */}
-                <div className="card-dark-hover overflow-hidden group relative animate-scale-in" style={{ animationDelay: '0.1s' }}>
-                    {/* Gradient Border Effect */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-
-                    <div className="relative p-6">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl gradient-bg-emerald shadow-lg glow-emerald">
-                                <BookOpen className="w-7 h-7 text-white" />
+                {/* Reading Test */}
+                <div className="card-dark-hover overflow-hidden group relative animate-scale-in" style={{ animationDelay: '0.05s' }}>
+                    <div className="p-6">
+                        <div className="flex items-start justify-between mb-4">
+                            <div className="inline-flex items-center justify-center w-11 h-11 rounded-xl gradient-bg-emerald glow-emerald">
+                                <BookOpen className="w-5 h-5 text-white" />
                             </div>
                             <div className="text-right">
-                                <p className="text-xs text-slate-400 mb-1">Attempts Left</p>
-                                <p className="text-2xl font-bold gradient-text-emerald">{getRemaining('reading')}</p>
+                                <p className="text-xs text-stone-400 mb-0.5">Attempts Left</p>
+                                <p className="text-xl font-bold text-[#047857]">{getRemaining('reading')}</p>
                             </div>
                         </div>
-
-                        <h3 className="text-2xl font-bold text-slate-100 mb-3">Reading Test</h3>
-                        <p className="text-slate-400 mb-6 leading-relaxed">
-                            Test your comprehension with articles and questions tailored to challenge your understanding.
+                        <h3 className="text-lg font-semibold text-stone-900 mb-2">Reading Test</h3>
+                        <p className="text-stone-500 text-sm mb-5 leading-relaxed">
+                            Test your comprehension with articles and questions tailored to your level.
                         </p>
-
                         <Link
                             to="/reading"
-                            className="btn-gradient-emerald w-full flex items-center justify-center group"
+                            className="btn-gradient-emerald w-full"
                         >
                             Start Test
-                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                            <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-0.5 transition-transform" />
                         </Link>
                     </div>
                 </div>
             </div>
 
             {/* Recent Activity */}
-            <div className="card-dark overflow-hidden animate-scale-in" style={{ animationDelay: '0.2s' }}>
-                <div className="px-6 py-5 border-b border-slate-700 bg-slate-800/50">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                            <TrendingUp className="w-5 h-5 text-violet-400 mr-3" />
-                            <h3 className="text-xl font-bold text-slate-100">Recent Activity</h3>
-                        </div>
-                        <Link to="/review" className="text-sm text-violet-400 hover:text-violet-300 transition-colors">
-                            View All
-                        </Link>
+            <div className="card-dark overflow-hidden animate-scale-in" style={{ animationDelay: '0.1s' }}>
+                <div className="px-6 py-4 border-b border-[#E2DDD6] flex items-center justify-between">
+                    <div className="flex items-center">
+                        <TrendingUp className="w-4 h-4 text-[#1D4ED8] mr-2.5" />
+                        <h3 className="text-base font-semibold text-stone-800">Recent Activity</h3>
                     </div>
+                    <Link to="/review" className="text-sm text-blue-600 hover:text-blue-700 transition-colors font-medium">
+                        View All
+                    </Link>
                 </div>
 
-                <div className="divide-y divide-slate-700">
+                <div className="divide-y divide-[#F0ECE5]">
                     {stats?.history?.length > 0 ? (
-                        stats.history.slice(0, 5).map((record: any, idx: number) => (
+                        stats.history.slice(0, 5).map((record: any) => (
                             <div
                                 key={record.id}
-                                className="px-6 py-4 hover:bg-slate-700/30 transition-colors"
-                                style={{ animationDelay: `${0.3 + idx * 0.05}s` }}
+                                className="px-6 py-4 hover:bg-stone-50 transition-colors"
                             >
                                 <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-4">
-                                        <div className={`p-3 rounded-lg ${record.type === 'essay'
-                                            ? 'gradient-bg-purple'
-                                            : 'gradient-bg-emerald'
-                                            }`}>
-                                            {record.type === 'essay' ? (
-                                                <PenTool className="w-5 h-5 text-white" />
-                                            ) : (
-                                                <BookOpen className="w-5 h-5 text-white" />
-                                            )}
+                                    <div className="flex items-center space-x-3.5">
+                                        <div className={`p-2.5 rounded-lg ${record.type === 'essay' ? 'gradient-bg-purple' : 'gradient-bg-emerald'}`}>
+                                            {record.type === 'essay'
+                                                ? <PenTool className="w-4 h-4 text-white" />
+                                                : <BookOpen className="w-4 h-4 text-white" />
+                                            }
                                         </div>
                                         <div>
-                                            <p className="font-semibold text-slate-200 capitalize">
+                                            <p className="text-sm font-medium text-stone-800 capitalize">
                                                 {record.type} Test
                                             </p>
-                                            <p className="text-sm text-slate-400">
+                                            <p className="text-xs text-stone-400">
                                                 {new Date(record.createdAt).toLocaleDateString('en-US', {
-                                                    month: 'short',
-                                                    day: 'numeric',
-                                                    year: 'numeric'
+                                                    month: 'short', day: 'numeric', year: 'numeric'
                                                 })}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="flex items-center">
-                                        <Award className="w-4 h-4 text-amber-400 mr-2" />
-                                        <span className="text-lg font-bold text-slate-100">
+                                        <Award className="w-4 h-4 text-amber-500 mr-1.5" />
+                                        <span className="text-base font-bold text-stone-800">
                                             {record.score.toFixed(1)}
                                         </span>
-                                        <span className="text-sm text-slate-400 ml-1">/10</span>
+                                        <span className="text-xs text-stone-400 ml-0.5">/10</span>
                                     </div>
                                 </div>
                             </div>
                         ))
                     ) : (
                         <div className="px-6 py-12 text-center">
-                            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-700/50 mb-4">
-                                <TrendingUp className="w-8 h-8 text-slate-500" />
+                            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-stone-100 mb-4">
+                                <TrendingUp className="w-7 h-7 text-stone-400" />
                             </div>
-                            <p className="text-slate-400 mb-4">No activities yet. Start a test to see your progress!</p>
-                            <div className="flex gap-3 justify-center">
-                                <Link to="/essay" className="text-sm text-violet-400 hover:text-violet-300 transition-colors">
+                            <p className="text-stone-500 mb-4 text-sm">No activities yet. Start a test to see your progress!</p>
+                            <div className="flex gap-4 justify-center">
+                                <Link to="/essay" className="text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors">
                                     Start Essay →
                                 </Link>
-                                <Link to="/reading" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">
+                                <Link to="/reading" className="text-sm text-emerald-700 hover:text-emerald-800 font-medium transition-colors">
                                     Start Reading →
                                 </Link>
                             </div>

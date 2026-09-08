@@ -17,15 +17,12 @@ const Review: React.FC = () => {
     };
 
     const explainContent = async (recordId: string, content: string) => {
-        if (explanations[recordId]) {
-            // Already have explanation, just toggle display
-            return;
-        }
+        if (explanations[recordId]) return;
         setExplaining(recordId);
         try {
             const res = await api.post('/content/explain', { text: content, language: 'Chinese' });
             setExplanations(prev => ({ ...prev, [recordId]: res.data.explanation }));
-        } catch (err) {
+        } catch {
             alert('Failed to explain.');
         } finally {
             setExplaining(null);
@@ -35,92 +32,90 @@ const Review: React.FC = () => {
     return (
         <div className="space-y-6 animate-fade-in">
             <header>
-                <h1 className="text-3xl font-bold text-slate-100 mb-2">History Review</h1>
-                <p className="text-slate-400">Review your past tests and track your progress</p>
+                <h1 className="text-2xl font-semibold text-stone-900 mb-1">History Review</h1>
+                <p className="text-stone-500 text-sm">Review your past tests and track your progress</p>
             </header>
 
             <div className="card-dark overflow-hidden">
                 {history.map((record) => (
-                    <div key={record.id} className="border-b border-slate-700 last:border-0">
+                    <div key={record.id} className="border-b border-[#F0ECE5] last:border-0">
+                        {/* Row header */}
                         <div
                             onClick={() => toggleExpand(record.id)}
-                            className="p-5 flex items-center justify-between cursor-pointer hover:bg-slate-700/30 transition-colors"
+                            className="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-stone-50 transition-colors"
                         >
-                            <div className="flex items-center space-x-4 flex-1">
-                                <div className={`p-3 rounded-lg ${record.type === 'essay'
-                                    ? 'gradient-bg-purple'
-                                    : 'gradient-bg-emerald'
-                                    }`}>
-                                    {record.type === 'essay' ? (
-                                        <PenTool className="w-5 h-5 text-white" />
-                                    ) : (
-                                        <BookOpen className="w-5 h-5 text-white" />
-                                    )}
+                            <div className="flex items-center space-x-3.5 flex-1 min-w-0">
+                                <div className={`p-2.5 rounded-lg flex-shrink-0 ${record.type === 'essay' ? 'gradient-bg-purple' : 'gradient-bg-emerald'}`}>
+                                    {record.type === 'essay'
+                                        ? <PenTool className="w-4 h-4 text-white" />
+                                        : <BookOpen className="w-4 h-4 text-white" />
+                                    }
                                 </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center space-x-2 mb-1">
-                                        <span className="font-bold text-slate-100 capitalize">{record.type}</span>
-                                        <span className="text-slate-600">•</span>
-                                        <div className="flex items-center text-sm text-slate-400">
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2 mb-0.5">
+                                        <span className="text-sm font-semibold text-stone-800 capitalize">{record.type}</span>
+                                        <span className="text-stone-300">·</span>
+                                        <span className="flex items-center text-xs text-stone-400">
                                             <Calendar className="w-3 h-3 mr-1" />
                                             {new Date(record.createdAt).toLocaleDateString('en-US', {
-                                                month: 'short',
-                                                day: 'numeric',
-                                                year: 'numeric'
+                                                month: 'short', day: 'numeric', year: 'numeric'
                                             })}
-                                        </div>
+                                        </span>
                                     </div>
-                                    <p className="text-sm text-slate-400 truncate">{record.content?.substring(0, 80)}...</p>
+                                    <p className="text-xs text-stone-400 truncate">{record.content?.substring(0, 80)}…</p>
                                 </div>
                             </div>
-                            <div className="flex items-center space-x-4 ml-4">
+
+                            <div className="flex items-center gap-4 ml-4 flex-shrink-0">
                                 <div className="text-right">
-                                    <p className="text-xs text-slate-400 mb-1">Score</p>
+                                    <p className="text-xs text-stone-400 mb-0.5">Score</p>
                                     <div className="flex items-center">
-                                        <Award className="w-4 h-4 text-amber-400 mr-1" />
-                                        <span className={`text-xl font-bold ${Number(record.score) >= (record.type === 'essay' ? 6 : 60)
-                                            ? 'text-emerald-400'
-                                            : 'text-orange-400'
-                                            }`}>
+                                        <Award className="w-3.5 h-3.5 text-amber-500 mr-1" />
+                                        <span className={`text-base font-bold ${
+                                            Number(record.score) >= (record.type === 'essay' ? 6 : 60)
+                                                ? 'text-emerald-700'
+                                                : 'text-amber-600'
+                                        }`}>
                                             {Number(record.score).toFixed(1)}
                                         </span>
                                     </div>
                                 </div>
-                                {expanded === record.id ? (
-                                    <ChevronUp className="w-5 h-5 text-slate-400" />
-                                ) : (
-                                    <ChevronDown className="w-5 h-5 text-slate-400" />
-                                )}
+                                {expanded === record.id
+                                    ? <ChevronUp className="w-4 h-4 text-stone-400" />
+                                    : <ChevronDown className="w-4 h-4 text-stone-400" />
+                                }
                             </div>
                         </div>
 
+                        {/* Expanded content */}
                         {expanded === record.id && (
-                            <div className="px-6 py-6 bg-slate-700/20 border-t border-slate-700 space-y-5 animate-slide-up">
+                            <div className="px-5 py-5 bg-[#F7F4EF] border-t border-[#E2DDD6] space-y-5 animate-slide-up">
+                                {/* Article */}
                                 <div>
-                                    <div className="flex items-center justify-between mb-3">
-                                        <h4 className="font-semibold text-slate-100 text-sm flex items-center">
-                                            <div className="w-1 h-4 gradient-bg-purple rounded-full mr-2"></div>
+                                    <div className="flex items-center justify-between mb-2.5">
+                                        <h4 className="text-xs font-semibold text-stone-500 uppercase tracking-wide flex items-center">
+                                            <span className="w-1 h-3.5 gradient-bg-purple rounded-full mr-2 inline-block"></span>
                                             Content
                                         </h4>
                                         <button
                                             onClick={() => explainContent(record.id, record.content)}
                                             disabled={explaining === record.id}
-                                            className="text-sm text-violet-400 hover:text-violet-300 flex items-center transition-colors"
+                                            className="text-xs text-blue-600 hover:text-blue-700 flex items-center transition-colors"
                                         >
-                                            <HelpCircle className="w-4 h-4 mr-1" />
-                                            {explaining === record.id ? 'Explaining...' : 'Explain in Chinese'}
+                                            <HelpCircle className="w-3.5 h-3.5 mr-1" />
+                                            {explaining === record.id ? 'Explaining…' : 'Explain in Chinese'}
                                         </button>
                                     </div>
-                                    <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                                    <div className="font-reading text-stone-700 whitespace-pre-line bg-white p-4 rounded-lg border border-[#E2DDD6] text-[0.95rem]">
                                         {record.content}
-                                    </p>
+                                    </div>
                                     {explanations[record.id] && (
-                                        <div className="mt-4 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg animate-slide-up">
-                                            <h5 className="text-sm font-bold text-amber-400 mb-2 flex items-center">
-                                                <Sparkles className="w-4 h-4 mr-2" />
+                                        <div className="mt-3 p-4 bg-amber-50 border border-amber-200 rounded-lg animate-slide-up">
+                                            <h5 className="text-xs font-semibold text-amber-700 mb-2 flex items-center">
+                                                <Sparkles className="w-3.5 h-3.5 mr-1.5" />
                                                 Chinese Explanation
                                             </h5>
-                                            <p className="text-amber-200/90 text-sm leading-relaxed">{explanations[record.id]}</p>
+                                            <p className="text-amber-800 text-sm leading-relaxed">{explanations[record.id]}</p>
                                         </div>
                                     )}
                                 </div>
@@ -128,29 +123,29 @@ const Review: React.FC = () => {
                                 {record.type === 'essay' && (
                                     <>
                                         <div>
-                                            <h4 className="font-semibold text-slate-100 text-sm mb-3 flex items-center">
-                                                <div className="w-1 h-4 gradient-bg-blue rounded-full mr-2"></div>
+                                            <h4 className="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-2.5 flex items-center">
+                                                <span className="w-1 h-3.5 gradient-bg-blue rounded-full mr-2 inline-block"></span>
                                                 Your Essay
                                             </h4>
-                                            <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                                            <div className="font-reading text-stone-700 whitespace-pre-line bg-white p-4 rounded-lg border border-[#E2DDD6] text-[0.95rem]">
                                                 {record.answers}
-                                            </p>
+                                            </div>
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold text-slate-100 text-sm mb-3 flex items-center">
-                                                <div className="w-1 h-4 gradient-bg-emerald rounded-full mr-2"></div>
+                                            <h4 className="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-2.5 flex items-center">
+                                                <span className="w-1 h-3.5 gradient-bg-emerald rounded-full mr-2 inline-block"></span>
                                                 AI Feedback
                                             </h4>
-                                            <p className="text-sm text-slate-300 leading-relaxed whitespace-pre-line bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+                                            <div className="text-stone-700 text-sm leading-relaxed whitespace-pre-line bg-white p-4 rounded-lg border border-[#E2DDD6]">
                                                 {record.feedback}
-                                            </p>
+                                            </div>
                                         </div>
                                     </>
                                 )}
 
                                 {record.type === 'reading' && (
-                                    <div className="bg-slate-800/30 p-4 rounded-lg border border-slate-700">
-                                        <p className="text-sm italic text-slate-400">
+                                    <div className="bg-white p-4 rounded-lg border border-[#E2DDD6]">
+                                        <p className="text-xs italic text-stone-400">
                                             Detailed question review not available for reading tests.
                                         </p>
                                     </div>
@@ -162,11 +157,11 @@ const Review: React.FC = () => {
 
                 {history.length === 0 && (
                     <div className="p-12 text-center">
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-700/50 mb-4">
-                            <BookOpen className="w-8 h-8 text-slate-500" />
+                        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-stone-100 mb-4">
+                            <BookOpen className="w-7 h-7 text-stone-400" />
                         </div>
-                        <p className="text-slate-400 mb-4">No history found.</p>
-                        <p className="text-sm text-slate-500">Complete some tests to see your progress here!</p>
+                        <p className="text-stone-500 text-sm mb-1">No history found.</p>
+                        <p className="text-xs text-stone-400">Complete some tests to see your progress here.</p>
                     </div>
                 )}
             </div>
