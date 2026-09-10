@@ -1,5 +1,30 @@
 // Analytics utility functions for dashboard statistics
 
+export interface DimensionScores {
+    grammar: number;
+    vocabulary: number;
+    coherence: number;
+    relevance: number;
+    argumentation: number;
+    mechanics: number;
+}
+
+export interface EssayMetadata {
+    scores: DimensionScores;
+    strengths: string[];
+    weaknesses: string[];
+    improvement_tips: string[];
+}
+
+export const parseEssayMetadata = (metadata?: string): EssayMetadata | null => {
+    if (!metadata) return null;
+    try {
+        return JSON.parse(metadata) as EssayMetadata;
+    } catch {
+        return null;
+    }
+};
+
 export interface TestRecord {
     id: string;
     type: 'essay' | 'reading';
@@ -8,6 +33,7 @@ export interface TestRecord {
     content: string;
     answers?: string;
     feedback?: string;
+    metadata?: string;
 }
 
 export interface DailyData {
@@ -156,4 +182,69 @@ export const filterByTimePeriod = (
     const cutoffDateStr = cutoffDate.toISOString().split('T')[0];
 
     return data.filter(item => item.date >= cutoffDateStr);
+};
+
+// --- Dimension analytics ---
+
+export const DIMENSION_KEYS = [
+    'grammar', 'vocabulary', 'coherence', 'relevance', 'argumentation', 'mechanics'
+] as const;
+
+export type DimensionKey = typeof DIMENSION_KEYS[number];
+
+export interface DimensionAverages extends Record<DimensionKey, number> {
+    sampleCount: number;
+}
+
+export interface DailyDimensionData extends Record<DimensionKey, number> {
+    date: string;
+}
+
+const avgDimensions = (scores: DimensionScores[]): Record<DimensionKey, number> =>
+    Object.fromEntries(
+        DIMENSION_KEYS.map(k => [k, scores.reduce((s, sc) => s + sc[k], 0) / scores.length])
+    ) as Record<DimensionKey, number>;
+
+/**
+ * Calculate average score per dimension across all essay records with metadata
+ */
+export const calculateDimensionAverages = (history: TestRecord[]): DimensionAverages | null => {
+    const valid = history
+        .filter((r): r is TestRecord & { metadata: string } => r.type === 'essay' && !!r.metadata)
+        .map(r => parseEssayMetadata(r.metadata))
+        .filter((m): m is EssayMetadata => m !== null);
+
+    if (valid.length === 0) return null;
+
+    return { ...avgDimensions(valid.map(m => m.scores)), sampleCount: valid.length };
+};
+
+/**
+ * Return the dimension with the lowest average score
+ */
+export const getWeakestDimension = (avgs: DimensionAverages): DimensionKey =>
+    DIMENSION_KEYS.reduce<DimensionKey>(
+        (weakest, key) => avgs[key] < avgs[weakest] ? key : weakest,
+        DIMENSION_KEYS[0]
+    );
+
+/**
+ * Group dimension scores by date for trend charting (essay records with metadata only)
+ */
+export const groupDimensionsByDate = (history: TestRecord[]): DailyDimensionData[] => {
+    const grouped: Record<string, DimensionScores[]> = {};
+
+    history
+        .filter((r): r is TestRecord & { metadata: string } => r.type === 'essay' && !!r.metadata)
+        .forEach(r => {
+            const meta = parseEssayMetadata(r.metadata);
+            if (!meta) return;
+            const date = new Date(r.createdAt).toISOString().split('T')[0];
+            if (!grouped[date]) grouped[date] = [];
+            grouped[date].push(meta.scores);
+        });
+
+    return Object.entries(grouped)
+        .map(([date, scores]) => ({ date, ...avgDimensions(scores) }))
+        .sort((a, b) => a.date.localeCompare(b.date));
 };

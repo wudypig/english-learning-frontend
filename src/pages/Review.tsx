@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import api from '../lib/api';
 import { BookOpen, PenTool, ChevronDown, ChevronUp, Award, Calendar, HelpCircle, Sparkles } from 'lucide-react';
+import EssayScoreBreakdown from '../components/EssayScoreBreakdown';
+import { parseEssayMetadata } from '../utils/analytics';
+import type { TestRecord } from '../utils/analytics';
 
 const Review: React.FC = () => {
-    const [history, setHistory] = useState<any[]>([]);
+    const [history, setHistory] = useState<TestRecord[]>([]);
     const [expanded, setExpanded] = useState<string | null>(null);
     const [explanations, setExplanations] = useState<Record<string, string>>({});
     const [explaining, setExplaining] = useState<string | null>(null);
@@ -136,10 +139,22 @@ const Review: React.FC = () => {
                                                 <span className="w-1 h-3.5 gradient-bg-emerald rounded-full mr-2 inline-block"></span>
                                                 AI Feedback
                                             </h4>
-                                            <div className="text-stone-700 text-sm leading-relaxed whitespace-pre-line bg-white p-4 rounded-lg border border-[#E2DDD6]">
+                                            <div className="text-stone-700 text-sm leading-relaxed whitespace-pre-line bg-white p-4 rounded-lg border border-[#E2DDD6] font-reading">
                                                 {record.feedback}
                                             </div>
                                         </div>
+                                        {(() => {
+                                            const meta = parseEssayMetadata(record.metadata);
+                                            return meta ? (
+                                                <div>
+                                                    <h4 className="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-2.5 flex items-center">
+                                                        <span className="w-1 h-3.5 gradient-bg-purple rounded-full mr-2 inline-block"></span>
+                                                        Score Breakdown
+                                                    </h4>
+                                                    <EssayScoreBreakdown metadata={meta} compact={true} />
+                                                </div>
+                                            ) : null;
+                                        })()}
                                     </>
                                 )}
 
