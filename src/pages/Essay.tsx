@@ -176,6 +176,16 @@ const Essay: React.FC = () => {
                                 </div>
                             </div>
 
+                            <div className="mb-5">
+                                <h4 className="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-2.5 flex items-center">
+                                    <span className="w-1 h-3.5 gradient-bg-blue rounded-full mr-2 inline-block"></span>
+                                    Your Essay
+                                </h4>
+                                <div className="font-reading text-stone-700 whitespace-pre-line bg-[#F7F4EF] p-4 rounded-lg border border-[#E2DDD6] text-[0.95rem] leading-relaxed">
+                                    {essay}
+                                </div>
+                            </div>
+
                             {parseEssayMetadata(result.metadata) && (
                                 <div className="mb-5">
                                     <EssayScoreBreakdown metadata={parseEssayMetadata(result.metadata)!} />
