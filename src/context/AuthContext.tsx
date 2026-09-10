@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
+import api from '../lib/api';
 
 interface User {
     id: string;
@@ -12,7 +12,7 @@ interface User {
 
 interface AuthContextType {
     user: User | null;
-    login: (token: string, user: User) => void;
+    login: (accessToken: string, refreshToken: string, user: User) => void;
     logout: () => void;
     loading: boolean;
 }
@@ -24,23 +24,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
+        const accessToken = localStorage.getItem('accessToken');
         const storedUser = localStorage.getItem('user');
 
-        if (token && storedUser) {
+        if (accessToken && storedUser) {
             setUser(JSON.parse(storedUser));
         }
         setLoading(false);
+
+        const handleForceLogout = () => {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
+            setUser(null);
+        };
+
+        window.addEventListener('auth:logout', handleForceLogout);
+        return () => window.removeEventListener('auth:logout', handleForceLogout);
     }, []);
 
-    const login = (token: string, userData: User) => {
-        localStorage.setItem('token', token);
+    const login = (accessToken: string, refreshToken: string, userData: User) => {
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
         localStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
     };
 
     const logout = () => {
-        localStorage.removeItem('token');
+        const refreshToken = localStorage.getItem('refreshToken');
+        if (refreshToken) {
+            api.post('/auth/logout', { refreshToken }).catch(() => {});
+        }
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');
         setUser(null);
     };

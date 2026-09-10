@@ -38,8 +38,9 @@ const Settings: React.FC = () => {
         setMessage('');
         try {
             const res = await api.put('/user/settings', { nickname, difficultyLevel });
-            const token = localStorage.getItem('token') || '';
-            login(token, res.data);
+            const accessToken = localStorage.getItem('accessToken') || '';
+            const refreshToken = localStorage.getItem('refreshToken') || '';
+            login(accessToken, refreshToken, res.data);
             setMessage('Profile updated successfully!');
             setTimeout(() => setMessage(''), 3000);
         } catch {
