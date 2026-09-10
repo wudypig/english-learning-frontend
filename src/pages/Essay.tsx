@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import api from '../lib/api';
 import { FileText, Send, RefreshCw, HelpCircle, AlertCircle, Sparkles, Award } from 'lucide-react';
+import EssayScoreBreakdown from '../components/EssayScoreBreakdown';
+import { parseEssayMetadata } from '../utils/analytics';
+import type { TestRecord } from '../utils/analytics';
 
 const Essay: React.FC = () => {
     const [article, setArticle] = useState('');
     const [essay, setEssay] = useState('');
-    const [result, setResult] = useState<any>(null);
+    const [result, setResult] = useState<TestRecord | null>(null);
     const [loading, setLoading] = useState(false);
     const [explaining, setExplaining] = useState(false);
     const [explanation, setExplanation] = useState('');
@@ -165,13 +168,19 @@ const Essay: React.FC = () => {
                                     <h3 className="text-base font-semibold text-stone-800">Your Result</h3>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-xs text-stone-400 mb-0.5">Score</p>
+                                    <p className="text-xs text-stone-400 mb-0.5">Overall Score</p>
                                     <p className="text-3xl font-bold text-[#1D4ED8]">
-                                        {result.score.toFixed(1)}
+                                        {result.score?.toFixed(1) ?? '—'}
                                         <span className="text-base font-normal text-stone-400 ml-1">/10</span>
                                     </p>
                                 </div>
                             </div>
+
+                            {parseEssayMetadata(result.metadata) && (
+                                <div className="mb-5">
+                                    <EssayScoreBreakdown metadata={parseEssayMetadata(result.metadata)!} />
+                                </div>
+                            )}
 
                             <div className="bg-[#F7F4EF] rounded-lg p-5 border border-[#E2DDD6]">
                                 <h4 className="text-xs font-semibold text-stone-500 uppercase tracking-wide mb-3 flex items-center">
