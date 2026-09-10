@@ -19,8 +19,8 @@ const Login: React.FC = () => {
         setError('');
         try {
             const response = await api.post('/auth/login', { email, password });
-            const { token, user } = response.data;
-            login(token, user);
+            const { accessToken, refreshToken, user } = response.data;
+            login(accessToken, refreshToken, user);
             navigate('/');
         } catch (err: any) {
             setError(err.response?.data?.error || 'Failed to login');
