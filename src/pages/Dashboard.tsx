@@ -2,10 +2,11 @@ import React, { useEffect, useState, useMemo } from 'react';
 import api from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
-import { PenTool, BookOpen, TrendingUp, Award, ArrowRight, Target, Flame } from 'lucide-react';
+import { PenTool, BookOpen, TrendingUp, Award, ArrowRight, Target, Flame, TrendingDown } from 'lucide-react';
 import StatCard from '../components/StatCard';
 import PerformanceChart from '../components/PerformanceChart';
-import { calculateTotalTests, calculateAverageScore, calculateStreak, groupByDate } from '../utils/analytics';
+import DimensionTrendChart from '../components/DimensionTrendChart';
+import { calculateTotalTests, calculateAverageScore, calculateStreak, groupByDate, calculateDimensionAverages, getWeakestDimension, groupDimensionsByDate } from '../utils/analytics';
 
 const Dashboard: React.FC = () => {
     const { user } = useAuth();
@@ -32,12 +33,16 @@ const Dashboard: React.FC = () => {
 
     const analytics = useMemo(() => {
         const history = stats?.history || [];
+        const dimensionAvgs = calculateDimensionAverages(history);
         return {
             totalTests: calculateTotalTests(history),
             avgEssay: calculateAverageScore(history, 'essay'),
             avgReading: calculateAverageScore(history, 'reading'),
             streak: calculateStreak(history),
             chartData: groupByDate(history),
+            dimensionAvgs,
+            weakestDimension: dimensionAvgs ? getWeakestDimension(dimensionAvgs) : null,
+            dimensionChartData: groupDimensionsByDate(history),
         };
     }, [stats]);
 
@@ -81,9 +86,39 @@ const Dashboard: React.FC = () => {
                 </div>
             )}
 
+            {/* Weakest Dimension Insight */}
+            {analytics.weakestDimension && (() => {
+                const { weakestDimension, dimensionAvgs } = analytics;
+                if (!weakestDimension || !dimensionAvgs) return null;
+                return (
+                    <div className="card-dark p-5 flex items-center gap-4 border-l-4 border-[#B91C1C] animate-fade-in">
+                        <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-red-50 border border-red-200 flex-shrink-0">
+                            <TrendingDown className="w-5 h-5 text-[#B91C1C]" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-[#A8A29E] mb-0.5 font-body">Needs Most Improvement</p>
+                            <h3 className="text-lg font-bold text-[#1C1917] capitalize font-body">
+                                {weakestDimension}
+                            </h3>
+                            <p className="text-xs text-[#78716C] font-body">
+                                Average: {dimensionAvgs[weakestDimension].toFixed(1)} / 10
+                                {' · '}
+                                Based on {dimensionAvgs.sampleCount}{' '}
+                                {dimensionAvgs.sampleCount === 1 ? 'essay' : 'essays'}
+                            </p>
+                        </div>
+                    </div>
+                );
+            })()}
+
             {/* Performance Chart */}
             {stats?.history && stats.history.length > 0 && analytics.chartData.length > 0 && (
                 <PerformanceChart data={analytics.chartData} />
+            )}
+
+            {/* Dimension Trend Chart */}
+            {analytics.dimensionChartData.length > 0 && (
+                <DimensionTrendChart data={analytics.dimensionChartData} />
             )}
 
             {/* Practice Cards */}
