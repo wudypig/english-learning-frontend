@@ -10,6 +10,7 @@ import Review from './pages/Review';
 import Settings from './pages/Settings';
 import SearchResults from './pages/SearchResults';
 import UserDashboard from './pages/UserDashboard';
+import VerifyEmail from './pages/VerifyEmail';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -31,6 +32,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
 
           {/* Protected Routes */}
           <Route
