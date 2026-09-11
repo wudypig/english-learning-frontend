@@ -31,6 +31,7 @@ export interface TestRecord {
     score: number;
     createdAt: string;
     content: string;
+    questions?: string;
     answers?: string;
     feedback?: string;
     metadata?: string;
