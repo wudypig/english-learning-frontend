@@ -1,42 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import api from '../lib/api';
 import { CheckCircle, XCircle, Loader, Mail } from 'lucide-react';
+import { useResendVerification } from '../hooks/useResendVerification';
 
 type State = 'loading' | 'success' | 'expired' | 'invalid';
 
 const VerifyEmail: React.FC = () => {
     const [searchParams] = useSearchParams();
+    const token = searchParams.get('token') ?? '';
     const [state, setState] = useState<State>('loading');
     const [resendEmail, setResendEmail] = useState('');
-    const [resendSent, setResendSent] = useState(false);
-    const [resendLoading, setResendLoading] = useState(false);
+    const called = useRef(false);
+
+    const { resendLoading, resendSent, handleResend } = useResendVerification(resendEmail);
 
     useEffect(() => {
-        const token = searchParams.get('token');
+        if (called.current) return;
+        called.current = true;
+
         if (!token) {
             setState('invalid');
             return;
         }
 
-        api.get(`/auth/verify-email?token=${encodeURIComponent(token)}`)
+        const controller = new AbortController();
+
+        api.get(`/auth/verify-email?token=${encodeURIComponent(token)}`, { signal: controller.signal })
             .then(() => setState('success'))
             .catch((err) => {
+                if (err.name === 'CanceledError') return;
                 const error = err.response?.data?.error;
                 setState(error === 'token_expired' ? 'expired' : 'invalid');
             });
-    }, [searchParams]);
 
-    const handleResend = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setResendLoading(true);
-        try {
-            await api.post('/auth/resend-verification', { email: resendEmail });
-            setResendSent(true);
-        } finally {
-            setResendLoading(false);
-        }
-    };
+        return () => controller.abort();
+    }, [token]);
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: 'var(--bg-page)' }}>
