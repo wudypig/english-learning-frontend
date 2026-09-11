@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import api from '../lib/api';
 import { CheckCircle, XCircle, Loader, Mail } from 'lucide-react';
@@ -11,14 +11,10 @@ const VerifyEmail: React.FC = () => {
     const token = searchParams.get('token') ?? '';
     const [state, setState] = useState<State>('loading');
     const [resendEmail, setResendEmail] = useState('');
-    const called = useRef(false);
 
     const { resendLoading, resendSent, handleResend } = useResendVerification(resendEmail);
 
     useEffect(() => {
-        if (called.current) return;
-        called.current = true;
-
         if (!token) {
             setState('invalid');
             return;
