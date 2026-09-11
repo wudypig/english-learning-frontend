@@ -9,6 +9,9 @@ const Login: React.FC = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [unverified, setUnverified] = useState(false);
+    const [resendLoading, setResendLoading] = useState(false);
+    const [resendSent, setResendSent] = useState(false);
 
     const { login } = useAuth();
     const navigate = useNavigate();
@@ -17,15 +20,30 @@ const Login: React.FC = () => {
         e.preventDefault();
         setLoading(true);
         setError('');
+        setUnverified(false);
         try {
             const response = await api.post('/auth/login', { email, password });
             const { accessToken, refreshToken, user } = response.data;
             login(accessToken, refreshToken, user);
             navigate('/');
         } catch (err: any) {
-            setError(err.response?.data?.error || 'Failed to login');
+            if (err.response?.data?.error === 'email_not_verified') {
+                setUnverified(true);
+            } else {
+                setError(err.response?.data?.error || 'Failed to login');
+            }
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleResend = async () => {
+        setResendLoading(true);
+        try {
+            await api.post('/auth/resend-verification', { email });
+            setResendSent(true);
+        } finally {
+            setResendLoading(false);
         }
     };
 
@@ -46,6 +64,24 @@ const Login: React.FC = () => {
                     {error && (
                         <div className="mb-5 p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm animate-slide-up">
                             {error}
+                        </div>
+                    )}
+
+                    {unverified && (
+                        <div className="mb-5 p-3.5 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm animate-slide-up">
+                            <p className="font-medium mb-1">Email not verified</p>
+                            <p className="mb-2">Please verify your email before logging in.</p>
+                            {resendSent ? (
+                                <p className="text-emerald-700 font-medium">Verification email sent! Check your inbox.</p>
+                            ) : (
+                                <button
+                                    onClick={handleResend}
+                                    disabled={resendLoading}
+                                    className="text-[#1D4ED8] hover:text-[#1E40AF] font-medium underline disabled:opacity-60"
+                                >
+                                    {resendLoading ? 'Sending…' : 'Resend verification email'}
+                                </button>
+                            )}
                         </div>
                     )}
 
