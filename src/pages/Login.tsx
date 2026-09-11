@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../lib/api';
 import { useAuth } from '../context/AuthContext';
 import { LogIn, Mail, Lock } from 'lucide-react';
+import { useResendVerification } from '../hooks/useResendVerification';
 
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -10,11 +11,10 @@ const Login: React.FC = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [unverified, setUnverified] = useState(false);
-    const [resendLoading, setResendLoading] = useState(false);
-    const [resendSent, setResendSent] = useState(false);
 
     const { login } = useAuth();
     const navigate = useNavigate();
+    const { resendLoading, resendSent, handleResend } = useResendVerification(email);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,18 +37,8 @@ const Login: React.FC = () => {
         }
     };
 
-    const handleResend = async () => {
-        setResendLoading(true);
-        try {
-            await api.post('/auth/resend-verification', { email });
-            setResendSent(true);
-        } finally {
-            setResendLoading(false);
-        }
-    };
-
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#F7F4EF] px-4">
+        <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: 'var(--bg-page)' }}>
             <div className="w-full max-w-md animate-fade-in">
 
                 {/* Brand */}

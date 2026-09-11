@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../lib/api';
 import { UserPlus, Mail, Lock, User, CheckCircle } from 'lucide-react';
+import { useResendVerification } from '../hooks/useResendVerification';
 
 const Register: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -10,8 +11,8 @@ const Register: React.FC = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [registered, setRegistered] = useState(false);
-    const [resendLoading, setResendLoading] = useState(false);
-    const [resendSent, setResendSent] = useState(false);
+
+    const { resendLoading, resendSent, handleResend } = useResendVerification(email);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,18 +28,8 @@ const Register: React.FC = () => {
         }
     };
 
-    const handleResend = async () => {
-        setResendLoading(true);
-        try {
-            await api.post('/auth/resend-verification', { email });
-            setResendSent(true);
-        } finally {
-            setResendLoading(false);
-        }
-    };
-
     return (
-        <div className="min-h-screen flex items-center justify-center bg-[#F7F4EF] px-4">
+        <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: 'var(--bg-page)' }}>
             <div className="w-full max-w-md animate-fade-in">
 
                 {/* Brand */}
